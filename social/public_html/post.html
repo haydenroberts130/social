@@ -1,0 +1,34 @@
+<!-- 
+    Hayden Roberts
+    This file serves as the post page.
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <link rel="stylesheet" href="./css/post.css" />
+     <script src="client.js" defer></script>
+     <title>Post To Account</title>
+   </head>
+   <body>
+     <div class="add-element">
+       <div>
+         <h1 id="postTitle">Create a New Post</h1>
+       </div>
+       <form enctype="multipart/form-data">
+         <div class="input-container">
+           <label for="photo">Add a Photo</label>
+           <input type="file" id="photo" name="photo" accept="image/*" />
+         </div>
+         <div class="input-container">
+           <label for="caption">Add a Caption</label>
+           <input type="text" id="caption" name="caption" />
+         </div>
+         <input type="button" value="Create Post" onclick="addPost()" />
+       </form>
+     </div>
+   </body>
+ </html>
+ 
