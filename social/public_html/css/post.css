@@ -8,19 +8,26 @@ This CSS file serves at the style sheet for post.html
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #fafafa;
+  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .add-element {
   max-width: 600px;
   margin: 50px auto;
-  padding: 20px;
+  padding: 100px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
 }
 
 #postTitle {
