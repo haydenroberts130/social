@@ -24,7 +24,7 @@ module.exports = User;
 // POSTS
 const postSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    image: { type: String, required: true },
+    image: { data: Buffer, contentType: String, required: true },  // Change the type to Buffer and include contentType
     caption: { type: String },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
