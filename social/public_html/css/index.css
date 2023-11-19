@@ -5,15 +5,25 @@
     box-sizing: border-box;
 }
 
+.login {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 100px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #fafafa;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(to bottom, #F58529, #DD2A7B);
+    background-size: cover;
     height: 100vh;
 }
 
@@ -34,19 +44,19 @@ div {
 }
 
 .signup-color {
-    color: #396cf7;
+    color: #f7319e;
 }
 
 .heading {
     /* color: #333; */
-    color: #2489ad;
+    color: #125688;
     font-size: 40px;
     padding: 30px;
 }
 
 #loginTitle, #createTitle {
     font-size: 24px;
-    color: #333;
+    color: #125688;
 }
 
 label {
@@ -67,14 +77,14 @@ input[type="submit"] {
 
 input[type="submit"] {
     cursor: pointer;
-    background-color: #3897f0;
+    background-color: #125688;
     color: #fff;
     border: none;
     transition: background-color 0.3s ease;
 }
 
 input[type="submit"]:hover {
-    background-color: #3578e5;
+    background-color: #125688;
 }
 
 #failed {
@@ -94,7 +104,7 @@ h1 {
 
 #createButton {
     cursor: pointer;
-    background-color: #3897f0;
+    background-color: #125688;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -104,5 +114,5 @@ h1 {
 }
 
 #createButton:hover {
-    background-color: #3578e5;
+    background-color: #125688;
 }
