@@ -6,9 +6,9 @@
 }
 
 .login {
+    margin: 10px;
     max-width: 600px;
-    margin: 50px auto;
-    padding: 100px;
+    padding: 0px 25px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -16,15 +16,11 @@
 
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
     background: linear-gradient(to bottom, #F58529, #DD2A7B);
-    background-size: cover;
-    height: 100vh;
 }
 
 .social-container {
