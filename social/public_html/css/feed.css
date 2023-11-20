@@ -1,0 +1,93 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background-size: cover;
+  height: 100vh;
+}
+
+#topContainer {
+  
+  margin-top: 1%;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Adjusted to space-between for better distribution */
+  gap: 10px;
+
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* #header, #sideBar {
+  margin-right: 20px;
+} */
+
+#header {
+  flex-grow: 1;
+}
+
+#sideBar {
+  flex-grow: 2;
+}
+
+#logoutButton, #helpButton {
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#logoutButton:hover, #helpButton:hover {
+  background-color: #0d456c;
+}
+
+#displayArea {
+  position: relative;
+  width: 85%;
+  min-height: 75%;
+}
+
+#displayPosts, #displayComments {
+  margin-top: 20px;
+  color: #125688;
+}
+
+#sAccounts {
+  width: 80%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#sideBar input[type="submit"] {
+  width: 80%;
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#sideBar input[type="submit"]:hover {
+  background-color: #0d456c;
+}
+#topContainer, #displayArea {
+  width: 80%; /* Set the same width for both */
+  margin: 20px auto; /* Top and bottom margins at 20px, auto margins on left and right for centering */
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
