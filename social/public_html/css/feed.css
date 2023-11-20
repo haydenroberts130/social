@@ -8,7 +8,7 @@ body {
   font-family: "Arial", sans-serif;
   background: linear-gradient(to bottom, #F58529, #DD2A7B);
   background-size: cover;
-  height: 100vh;
+  height: 97.4vh;
 }
 
 #topContainer {
@@ -38,7 +38,7 @@ body {
   flex-grow: 2;
 }
 
-#logoutButton, #helpButton {
+#postButton, #logoutButton, #helpButton {
   padding: 10px;
   background-color: #125688;
   color: #fff;
@@ -47,7 +47,7 @@ body {
   cursor: pointer;
 }
 
-#logoutButton:hover, #helpButton:hover {
+#postButton:hover, #logoutButton:hover, #helpButton:hover {
   background-color: #0d456c;
 }
 
