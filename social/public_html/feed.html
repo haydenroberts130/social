@@ -1,27 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Your Feed</title>
-    <link rel="stylesheet" href="./css/feed.css" />
-</head>
-<body>
-    <div id="topContainer">
-        <div id="header">
-            <span id="accTop">
-                <p>profile pic + name</p>
-                <h1 id="displayName"></h1>
-            </span>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>Your Feed</title>
+        <link rel="stylesheet" href="./css/feed.css" />
+    </head>
+    <body>
+        <div id="topContainer">
+            <div id="header">
+                <span id="accTop">
+                    <p>profile pic + name</p>
+                    <h1 id="displayName"></h1>
+                </span>
+            </div>
+            <div id="sideBar">
+                <input id="sAccounts" type="text" name="sAccounts">
+                <input type="submit" value="Search Users" name="searAccounts">
+            </div>
+            <input type="submit" value="+" id="postButton" class="styled-button">
+            <input type="submit" value="Logout" id="logoutButton" class="styled-button">
+            <input type="submit" value="Help" id="helpButton" class="styled-button">
         </div>
-        <div id="sideBar">
-            <input id="sAccounts" type="text" name="sAccounts">
-            <input type="submit" value="Search Users" name="searAccounts">
+        <div id="displayArea">
+            <!-- Content goes here -->
+            <div class="post">
+                <div>username</div>
+                <div class="post-image">
+                    <img src="./img/testing.jpeg" alt="TESTING PICTURE">
+                </div>
+                <hr> <!-- This creates a visible line between the image and the caption -->
+                <div class="post-content">
+                    <span>caption goes here</span>
+                    <input type="submit" value="<3" id="likeButton" class="styled-button">
+                </div>
+            </div>
+            
         </div>
-        <input type="submit" value="+" id="postButton">
-        <input type="submit" value="Logout" id="logoutButton">
-        <input type="submit" value="Help" id="helpButton">
-    </div>
-    <div id="displayArea">
-        <!-- Content goes here -->
-    </div>
-</body>
-</html>
+    </body>
+    </html>
