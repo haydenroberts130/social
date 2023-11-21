@@ -3,19 +3,30 @@
 */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: "Arial", sans-serif;
-    margin: 0;
-    padding: 0; 
-    background: linear-gradient(to bottom, #F58529, #DD2A7B);
-    background-size: cover;
-    height: 100vh;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* 
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background-size: cover;
+  background-attachment: fixed; 
+  height: 100vh;
+  overflow-x: hidden; 
+} */
+
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background-size: cover;
+  background-attachment: fixed; 
+  min-height: 100vh; /* Instead of height: 100vh; */
+  overflow-x: hidden;
+  overflow-y: auto; /* Ensure vertical scrolling is allowed */
+}
+
 
   #helpButtom {
     bottom:5%;
@@ -75,16 +86,29 @@
   
   #displayArea {
     border-radius: 10px;
-    position: fixed;
+    position: relative;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin: 20px;
-    min-height: 75%; /* Adjust as needed */
+    min-height: 75%; 
     left: 8%;
     width: 80%;
     right: 10%;
   }
+
+  /* #displayArea {
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 75%;
+    padding: 20px;
+    margin: 20px;
+    left: 8%;
+    width: 80%;
+    right: 10%;
+  } */
+  
   
   #displayPosts, #displayComments {
     margin-top: 20px;
@@ -107,4 +131,87 @@
 
   }
   /* Additional styles for other elements as needed */
+  .post {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+    max-width: 600px; /* Adjust as needed */
+    margin: 20px auto;
+  }
+  
+  .post img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .post p, .post div {
+    margin-top: 10px;
+    color: #333; /* Dark gray text */
+    font-family: "Arial", sans-serif;
+  }
+  
+  /* If you have like, comment buttons or other interactive elements */
+  .post .interactive-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+  }
+  
+  .post .interactive-buttons button {
+    background-color: #125688;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .post .interactive-buttons button:hover {
+    background-color: #0d456c;
+  }
+  
+  .post {
+    /* Existing styles */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .post-image {
+    /* Styles for the image container if needed */
+  
+  }
+  
+  .post-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd; /* Or any color that fits your design */
+    margin: 10px 0;
+  }
+  
+  #likeButton {
+    /* Existing styles */
+    margin-left: auto; /* Pushes the button to the right */
+  }
+  
+  .styled-button {
+    padding: 10px;
+    background-color: #125688;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .styled-button:hover {
+    background-color: #0d456c;
+  }
   
