@@ -34,12 +34,16 @@ body {
     margin-right: 20px;
   } */
 
-#header {
-    flex-grow: 1;
+#userBar {
+    width: 30%;
 }
 
 #sideBar {
-    flex-grow: 2;
+    width: 40%;
+}
+
+#buttonBar{
+    width: 30%;
 }
 
 .styled-button {
@@ -69,7 +73,6 @@ body {
 }
 
 #sAccounts {
-    width: 80%;
     padding: 8px;
     margin-bottom: 10px;
     border-radius: 4px;
