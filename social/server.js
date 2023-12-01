@@ -289,11 +289,14 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     });
 
     newPost.save();
+    console.log('CHECKPOINT ALPHA');
 
     User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
+      console.log('CHECKPOINT BRAVO');
       p.then((result) => {
+        console.log('CHECKPOINT CHARLIE');
         res.redirect("/feed.html");
       });
     });
