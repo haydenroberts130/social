@@ -34,11 +34,11 @@ function addUser() {
 }
 
 function goToPost() {
-  window.location.href = 'post.html';
+  window.location.href = "post.html";
 }
 
 function goToHelp() {
-  window.location.href = 'help.html';
+  window.location.href = "help.html";
 }
 
 // Function to log in a user
@@ -168,24 +168,24 @@ function login() {
 // });
 
 function goToPost() {
-  window.location.href = '/post.html';
+  window.location.href = "/post.html";
 }
 
 function goToFeed() {
-  window.location.href = '/feed.html';
+  window.location.href = "/feed.html";
 }
 
 function goToAccount() {
-  window.location.href = '/account.html';
+  window.location.href = "/account.html";
 }
 
 function goToFeed() {
-  window.location.href = '/feed.html';
+  window.location.href = "/feed.html";
 }
 
 function searchUsers() {
-  const userInput = document.getElementById('sAccounts').value;
-  var list = document.getElementById('list');
+  const userInput = document.getElementById("sAccounts").value;
+  var list = document.getElementById("list");
 
   fetch("/search/users/" + userInput)
     .then((response) => response.json())
@@ -194,7 +194,7 @@ function searchUsers() {
       users.forEach((user) => {
         console.log(user.username);
         const userElement = document.createElement("div");
-        userElement.className = "listUsers"
+        userElement.className = "listUsers";
 
         userElement.innerHTML = `
         <a href=account.html?username=${user.username}>${user.username}</a>`;
@@ -206,44 +206,53 @@ function searchUsers() {
     });
 }
 
-function addPost() {
-  const form = new FormData();
-  const photoInput = document.getElementById("photo").files[0];
-  const captionInput = document.getElementById("caption").value;
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get("username");
-
-
-  form.append('photo', photoInput);
-  form.append('caption', captionInput);
-  form.append('username', username);
-
-
-  fetch('/upload/post', {
-    method: 'POST',
-    body: form
-  })
-  .then(response => {
-    if (response.status === 201) {
-      return response.json();
-    } else if (response.status === 400) {
-      throw new Error('No image uploaded.');
-    } else {
-      throw new Error('Failed to add post.');
+async function addPost() {
+  try {
+    // Fetch the username from the server
+    const response = await fetch("/get/usernameFromCookie");
+    if (!response.ok) {
+      throw new Error("Failed to fetch username.");
     }
-  })
-  .then(data => {
-    if (data.imagePath) {
-      console.log('Post added successfully.');
-      // Display the uploaded image
-      let img = document.createElement('img');
-      img.src = data.imagePath;
-      document.body.appendChild(img);
-    }
-  })
-  .catch(error => {
+
+    const username = await response.text();
+
+    // Rest of the code remains the same
+    const form = new FormData();
+    const photoInput = document.getElementById("photo").files[0];
+    const captionInput = document.getElementById("caption").value;
+
+    form.append("photo", photoInput);
+    form.append("caption", captionInput);
+    form.append("username", username);
+
+    fetch("/upload/post", {
+      method: "POST",
+      body: form,
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          return response.json();
+        } else if (response.status === 400) {
+          throw new Error("No image uploaded.");
+        } else {
+          throw new Error("Failed to add post.");
+        }
+      })
+      .then((data) => {
+        if (data.imagePath) {
+          console.log("Post added successfully.");
+          // Display the uploaded image
+          let img = document.createElement("img");
+          img.src = data.imagePath;
+          document.body.appendChild(img);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert(error.message);
+      });
+  } catch (error) {
     console.error("Error:", error);
     alert(error.message);
-  });
+  }
 }
