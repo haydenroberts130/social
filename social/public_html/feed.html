@@ -1,40 +1,117 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>Your Feed</title>
-        <link rel="stylesheet" href="./css/feed.css" />
-        <script src="client.js" defer></script>
-    </head>
-    <body>
-        <div id="topContainer">
-            <div id="header">
-                <span id="accTop">
-                    <p>profile pic + name</p>
-                    <h1 id="displayName"></h1>
-                </span>
-            </div>
-            <div id="sideBar">
-                <input id="sAccounts" type="text" name="sAccounts">
-                <input type="submit" value="Search Users" name="searchAccounts" onclick="searchUsers()">
-            </div>
-            <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()">
-            <input type="submit" value="Logout" id="logoutButton" class="styled-button">
-            <input type="submit" value="Help" id="helpButton" class="styled-button" onclick="goToHelp()">
-        </div>
-        <div id="displayArea">
-            <!-- Content goes here -->
-            <div class="post">
-                <div>username</div>
-                <div class="post-image">
-                    <img src="./img/testing.jpeg" alt="TESTING PICTURE">
-                </div>
-                <hr> <!-- This creates a visible line between the image and the caption -->
-                <div class="post-content">
-                    <span>caption goes here</span>
-                    <input type="submit" value="<3" id="likeButton" class="styled-button">
-                </div>
-            </div>
-            
-        </div>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Your Feed</title>
+    <link rel="stylesheet" href="./css/feed.css" />
+    <script src="client.js" defer></script>
+  </head>
+  <body>
+    <div id="topContainer">
+      <div id="header">
+        <span id="accTop">
+          <h1 id="displayName">Placeholder Name</h1>
+        </span>
+      </div>
+      <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get("username");
+        document.getElementById("displayName").innerText = `${username}'s feed`;
+      </script>
+      <div id="sideBar">
+        <input id="sAccounts" type="text" name="sAccounts" />
+        <input
+          type="submit"
+          value="Search Users"
+          name="searchAccounts"
+          onclick="searchAccounts"
+        />
+      </div>
+      <input
+        type="submit"
+        value="+"
+        id="postButton"
+        class="styled-button"
+        onclick="goToPost()"
+      />
+      <input
+        type="submit"
+        value="Logout"
+        id="logoutButton"
+        class="styled-button"
+      />
+      <input
+        type="submit"
+        value="Help"
+        id="helpButton"
+        class="styled-button"
+        onclick="goToHelp()"
+      />
+    </div>
+    <div id="displayArea"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("THIS IS REACHED");
+        const feedContainer = document.getElementById("displayArea");
+
+        // Make a request to your server to get the following list
+        fetch(`/get/getFollowingList?username=${username}`)
+          .then((response) => response.json())
+          .then((followingList) => {
+            if (followingList.length === 0) {
+              // Display a message if the user is not following anyone
+              feedContainer.innerHTML =
+                "<p class='empty-feed-message'>Follow people to see their posts here!</p>";
+            } else {
+              // Display posts from the user's follow list
+              for (const followedUser of followingList) {
+                // Make a request to your server to get posts for each followed user
+                fetch(`/get/getPostsFromUser?username=${followedUser}`)
+                  .then((response) => response.json())
+                  .then((posts) => {
+                    for (const post of posts) {
+                      const postDiv = document.createElement("div");
+                      postDiv.classList.add("post");
+
+                      const postUsernameDiv = document.createElement("div");
+                      postUsernameDiv.textContent = post.username;
+
+                      const postImageDiv = document.createElement("div");
+                      postImageDiv.classList.add("post-image");
+                      const postImage = document.createElement("img");
+                      postImage.src = post.imageUrl;
+                      postImage.alt = "Post Image";
+                      postImageDiv.appendChild(postImage);
+
+                      const hrDiv = document.createElement("hr");
+
+                      const postContentDiv = document.createElement("div");
+                      postContentDiv.classList.add("post-content");
+                      const captionSpan = document.createElement("span");
+                      captionSpan.textContent = post.caption;
+
+                      const likeButton = document.createElement("input");
+                      likeButton.type = "submit";
+                      likeButton.value = "<3";
+                      likeButton.id = "likeButton";
+                      likeButton.classList.add("styled-button");
+
+                      postContentDiv.appendChild(captionSpan);
+                      postContentDiv.appendChild(likeButton);
+
+                      postDiv.appendChild(postUsernameDiv);
+                      postDiv.appendChild(postImageDiv);
+                      postDiv.appendChild(hrDiv);
+                      postDiv.appendChild(postContentDiv);
+
+                      feedContainer.appendChild(postDiv);
+                    }
+                  })
+                  .catch((error) => console.error(error));
+              }
+            }
+          })
+          .catch((error) => console.error(error));
+      });
+    </script>
+  </body>
+</html>

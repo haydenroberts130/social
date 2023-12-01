@@ -88,27 +88,6 @@ app.use(express.static(__dirname + "/public_html"));
 
 let sessions = {};
 
-// This function authenticates whether someone has logged in or not.
-// If they have not and they try to access home or post, they will be redirected back to login.
-// function authenticate(req, res, next) {
-//   let c = req.cookies;
-//   console.log("auth request");
-//   console.log(req.cookies);
-//   if (c != undefined) {
-//     if (
-//       sessions[c.login.username] != undefined &&
-//       sessions[c.login.username].id == c.login.sessionID
-//     ) {
-//       next();
-//     } else {
-//       res.redirect("/index.html");
-//     }
-//   } else {
-//     res.redirect("/index.html");
-//   }
-// }
-
-
 function authenticate(req, res, next) {
   let c = req.cookies;
   console.log("auth request:");
@@ -169,7 +148,7 @@ app.post("/account/login", async (req, res) => {
         res.cookie(
           "login",
           { username: u.username, sessionID: sid },
-          { maxAge: 60000 * 2 }
+          { maxAge: 600000}
         );
         res.end("SUCCESS");
       } else {
@@ -219,6 +198,50 @@ app.post("/add/user", (req, res) => {
       }
     })
     .catch((err) => handleError(res, err));
+});
+
+app.get('/get/getFollowingList', (req, res) => {
+  const username = req.query.username;
+
+  User.findOne({ username: username })
+    .populate('following', 'username')
+    .exec()
+    .then((user) => {
+      if (user) {
+        const followingList = user.following.map((followedUser) => followedUser.username);
+        res.json(followingList);
+      } else {
+        res.json([]);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
+});
+
+app.get('/get/getPostsFromUser', (req, res) => {
+  const username = req.query.username;
+
+  User.findOne({ username: username })
+    .populate('posts') // Assuming 'posts' is an array of post documents
+    .exec()
+    .then((user) => {
+      if (user) {
+        const posts = user.posts.map((post) => ({
+          username: post.username,
+          imageUrl: post.imageUrl,
+          caption: post.caption,
+        }));
+        res.json(posts);
+      } else {
+        res.json([]);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
 });
 
 const handleError = (res, err) => {

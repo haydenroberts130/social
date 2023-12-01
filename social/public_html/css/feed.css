@@ -27,11 +27,12 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
-
-/* #header, #sideBar {
-  margin-right: 20px;
-} */
+.empty-feed-message {
+  font-size: 32px;
+  color: #888;
+  text-align: center;
+  margin: 20px;
+}
 
 #header {
   flex-grow: 1;
