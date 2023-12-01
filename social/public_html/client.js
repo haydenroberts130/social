@@ -33,6 +33,14 @@ function addUser() {
     });
 }
 
+function goToPost() {
+  window.location.href = 'post.html';
+}
+
+function goToHelp() {
+  window.location.href = 'help.html';
+}
+
 // Function to add a post
 function addPost() {
   const photoInput = document.getElementById("photo");
