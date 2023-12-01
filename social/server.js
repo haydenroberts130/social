@@ -197,6 +197,11 @@ app.post("/add/user", (req, res) => {
     .catch((err) => handleError(res, err));
 });
 
+const handleError = (res, err) => {
+  console.error(err);
+  res.status(500).send(err);
+};
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
