@@ -230,22 +230,11 @@ async function addPost() {
       body: form,
     })
       .then((response) => {
-        if (response.status === 201) {
-          return response.json();
-        } else if (response.status === 400) {
-          throw new Error("No image uploaded.");
-        } else {
-          throw new Error("Failed to add post.");
-        }
+        return response;
       })
       .then((data) => {
-        if (data.imagePath) {
-          console.log("Post added successfully.");
-          // Display the uploaded image
-          let img = document.createElement("img");
-          img.src = data.imagePath;
-          document.body.appendChild(img);
-        }
+        console.log("CHECKPOINT DELTA");
+        goToFeed();
       })
       .catch((error) => {
         console.error("Error:", error);
