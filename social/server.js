@@ -176,6 +176,27 @@ app.get("/get/posts/", (req, res) => {
   });
 });
 
+
+// POST: Add a user
+app.post("/add/user", (req, res) => {
+  const { username, password } = req.body;
+  // Check if a user with the same username already exists
+  User.findOne({ username })
+    .then((existingUser) => {
+      if (existingUser) {
+        res.status(400).json({ message: "Username already exists" });
+      } else {
+        // If the username is not found, create a new user
+        const newUser = new User({ username, password });
+        newUser
+          .save()
+          .then(() => res.status(201).json(newUser))
+          .catch((err) => handleError(res, err));
+      }
+    })
+    .catch((err) => handleError(res, err));
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
