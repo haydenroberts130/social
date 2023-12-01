@@ -265,18 +265,44 @@ app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
-// GET request for getting all the users with the substring KEYWORD
-app.get("/search/users/:KEYWORD", (req, res) => {
-  var keyword = req.params.KEYWORD;
+// IMAGE UPLOADING CODE
 
-  const users = User.find({
-    username: { $regex: keyword, $options: 'i' }, // Using regex for substring search, 'i' for case-insensitive search
-  }).exec();
 
-  users
-    .then((document) => res.json(document))
-    .catch((error) => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "Internal server error" });
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') // 'uploads/' is the folder where images will be saved
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
+  }
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/upload/post', upload.single('photo'), async (req, res) => {
+  const caption = req.body.caption;
+  const username = req.body.username; // Assuming username is sent along with the form
+
+  if (req.file) {
+    const imagePath = req.file.path; // The path where the image is saved
+
+    // Create a new post
+    const newPost = new Post({
+      user: username,
+      imagePath: imagePath,
+      caption: caption,
     });
+
+    try {
+      await newPost.save();
+      // res.status(201).send("Post created successfully");
+      res.status(201).json({ imagePath: req.file.path });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error creating post");
+    }
+  } else {
+    res.status(400).send("No image uploaded");
+  }
 });

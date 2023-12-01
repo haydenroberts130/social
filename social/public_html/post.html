@@ -13,22 +13,21 @@
      <title>Post To Account</title>
    </head>
    <body>
-     <div class="add-element">
-       <div>
-         <h1 id="postTitle">Create a New Post</h1>
-       </div>
-       <form enctype="multipart/form-data">
-         <div class="input-container">
-           <label for="photo">Add a Photo</label>
-           <input type="file" id="photo" name="photo" accept="image/*" />
-         </div>
-         <div class="input-container">
-           <label for="caption">Add a Caption</label>
-           <input type="text" id="caption" name="caption" />
-         </div>
-         <input type="button" value="Create Post" onclick="addPost()" />
-       </form>
-     </div>
-   </body>
+    <div class="add-element">
+        <div>
+            <h1 id="postTitle">Create a New Post</h1>
+        </div>
+        <form enctype="multipart/form-data">
+            <div class="input-container">
+                <label for="photo">Add a Photo</label>
+                <input type="file" accept="image/*" name="photo" id="photo">
+            </div>
+            <div class="input-container">
+                <label for="caption">Add a Caption</label>
+                <input type="text" id="caption" name="caption" />
+            </div>
+            <input type="button" value="Create Post" onclick="addPost()" />
+        </form>
+    </div>
+  </body>
  </html>
- 
