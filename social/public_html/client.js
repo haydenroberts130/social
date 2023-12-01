@@ -82,7 +82,7 @@ function addPost() {
       .then((response) => {
         if (response.status === 201) {
           console.log("Post added successfully.");
-          window.location.href = `home.html?username=${username}`;
+          window.location.href = `feed.html?username=${username}`;
         } else {
           console.error("Failed to add post.");
         }
@@ -116,7 +116,7 @@ function login() {
     .then((response) => {
       if (response.status === 200) {
         // Login successful, redirect to a new page or perform other actions.
-        window.location.href = `/home.html?username=${username}`;
+        window.location.href = `/feed.html?username=${username}`;
       } else {
         // Login failed, display an error message.
         const loginError = document.getElementById("loginError");
@@ -128,100 +128,99 @@ function login() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const searchPostsButton = document.querySelector("#searchPostsButton");
-  const resultsContainer = document.querySelector("#results");
+// document.addEventListener("DOMContentLoaded", function () {
+//   const searchPostsButton = document.querySelector("#searchPostsButton");
+//   const resultsContainer = document.querySelector("#results");
 
-  // Function to handle displaying posts
-  function displayPosts(posts) {
-    resultsContainer.innerHTML = ""; // Clear previous results
+//   // Function to handle displaying posts
+//   function displayPosts(posts) {
+//     resultsContainer.innerHTML = ""; // Clear previous results
 
-    if (posts.length === 0) {
-      resultsContainer.textContent = "";
-      return;
-    }
+//     if (posts.length === 0) {
+//       resultsContainer.textContent = "";
+//       return;
+//     }
 
-    posts.forEach((listing) => {
-      const postCard = document.createElement("div");
-      postCard.classList.add("post-card");
-      postCard.id = `postCard-${listing._id}`;
+//     posts.forEach((listing) => {
+//       const postCard = document.createElement("div");
+//       postCard.classList.add("post-card");
+//       postCard.id = `postCard-${listing._id}`;
 
-      const image = document.createElement("p");
-      image.textContent = listing.image;
+//       const image = document.createElement("p");
+//       image.textContent = listing.image;
 
-      const caption = document.createElement("p");
-      caption.textContent = listing.description;
+//       const caption = document.createElement("p");
+//       caption.textContent = listing.description;
 
-      postCard.appendChild(image);
-      postCard.appendChild(caption);
-      postCard.appendChild(price);
-      resultsContainer.appendChild(postCard);
-    });
-  }
+//       postCard.appendChild(image);
+//       postCard.appendChild(caption);
+//       resultsContainer.appendChild(postCard);
+//     });
+//   }
 
-  // Function to search for posts
-  function searchPosts() {
-    const keyword = document.getElementById("searchPosts").value;
+//   // Function to search for posts
+//   function searchPosts() {
+//     const keyword = document.getElementById("searchPosts").value;
 
-    // Make a GET request to retrieve posts matching the keyword
-    fetch(`/search/posts/${keyword}`)
-      .then((response) => response.json())
-      .then((posts) => {
-        displayPosts(posts);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
+//     // Make a GET request to retrieve posts matching the keyword
+//     fetch(`/search/posts/${keyword}`)
+//       .then((response) => response.json())
+//       .then((posts) => {
+//         displayPosts(posts);
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+//   }
 
-  // Function to view posts
-  function viewPosts() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get("username");
+//   // Function to view posts
+//   function viewPosts() {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const username = urlParams.get("username");
 
-    // Make a GET request to retrieve user posts
-    fetch(`/get/posts/${username}`)
-      .then((response) => response.json())
-      .then((posts) => {
-        console.log(posts);
-        const postIds = posts.map((listing) => listing);
-        console.log(postIds);
-        const postPromises = postIds.map((postId) => {
-          return fetch(`/get/post/${postId}`)
-            .then((response) => response.json())
-            .catch((error) => {
-              console.error("Error fetching post details:", error);
-              return null; // Handle fetch error gracefully
-            });
-        });
+//     // Make a GET request to retrieve user posts
+//     fetch(`/get/posts/${username}`)
+//       .then((response) => response.json())
+//       .then((posts) => {
+//         console.log(posts);
+//         const postIds = posts.map((listing) => listing);
+//         console.log(postIds);
+//         const postPromises = postIds.map((postId) => {
+//           return fetch(`/get/post/${postId}`)
+//             .then((response) => response.json())
+//             .catch((error) => {
+//               console.error("Error fetching post details:", error);
+//               return null; // Handle fetch error gracefully
+//             });
+//         });
 
-        Promise.all(postPromises)
-          .then((posts) => {
-            const validposts = posts.filter((post) => post !== null);
-            displayPosts(validposts);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
+//         Promise.all(postPromises)
+//           .then((posts) => {
+//             const validposts = posts.filter((post) => post !== null);
+//             displayPosts(validposts);
+//           })
+//           .catch((error) => {
+//             console.error("Error:", error);
+//           });
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+//   }
 
-  if (window.location.href.includes("home.html")) {
-    searchPostsButton.addEventListener("click", searchPosts);
-    viewPostsButton.addEventListener("click", viewPosts);
+//   if (window.location.href.includes("feed.html")) {
+//     searchPostsButton.addEventListener("click", searchPosts);
+//     viewPostsButton.addEventListener("click", viewPosts);
 
-    document
-      .getElementById("createPostButton")
-      .addEventListener("click", function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get("username");
-        window.location.href = "post.html?username=" + username;
-      });
-  }
-});
+//     document
+//       .getElementById("createPostButton")
+//       .addEventListener("click", function () {
+//         const urlParams = new URLSearchParams(window.location.search);
+//         const username = urlParams.get("username");
+//         window.location.href = "post.html?username=" + username;
+//       });
+//   }
+// });
 
 function goToPost() {
   window.location.href = '/post.html';

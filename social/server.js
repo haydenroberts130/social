@@ -127,7 +127,6 @@ function authenticate(req, res, next) {
   }
 }
 
-
 function addSession(username) {
   let sid = Math.floor(Math.random() * 1000000000);
   let now = Date.now();
@@ -149,23 +148,38 @@ function removeSessions() {
 
 setInterval(removeSessions, 600000);
 
-app.post("/account/login", (req, res) => {
+app.post("/account/login", async (req, res) => {
   console.log(sessions);
   let u = req.body;
-  let p1 = User.find({ username: u.username, password: u.password }).exec(); // hashed password
-  p1.then((results) => {
-    if (results.length == 0) {
+  
+  try {
+    let hashed = await bcrypt.hash(u.password, 10);
+    console.log(hashed);
+    
+    let user = await User.findOne({ username: u.username }).exec();
+    
+    if (!user) {
       res.end("Could not find account");
     } else {
-      let sid = addSession(u.username);
-      res.cookie(
-        "login",
-        { username: u.username, sessionID: sid },
-        { maxAge: 60000 * 2 }
-      );
-      res.end("SUCCESS");
+      // Use bcrypt.compare to compare hashed password
+      const match = await bcrypt.compare(u.password, user.password);
+      
+      if (match) {
+        let sid = addSession(u.username);
+        res.cookie(
+          "login",
+          { username: u.username, sessionID: sid },
+          { maxAge: 60000 * 2 }
+        );
+        res.end("SUCCESS");
+      } else {
+        res.end("Invalid password");
+      }
     }
-  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).end("Internal Server Error");
+  }
 });
 
 // GET request for getting all the users from the database
