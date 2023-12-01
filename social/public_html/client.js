@@ -222,3 +222,16 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 });
+
+function goToPost() {
+  window.location.href = '/post.html';
+}
+
+function goToFeed() {
+  window.location.href = '/feed.html';
+}
+
+function goToAccount() {
+  window.location.href = '/account.html';
+}
+
