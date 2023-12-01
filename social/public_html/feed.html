@@ -26,7 +26,6 @@
 
         getUsername()
           .then((username) => {
-            console.log("Username:", username);
             document.getElementById(
               "displayName"
             ).innerText = `${username}'s feed`;
@@ -68,10 +67,10 @@
     <div id="displayArea"></div>
     <script>
 
-
+        
       document.addEventListener("DOMContentLoaded", async function () {
         const feedContainer = document.getElementById("displayArea");
-        
+
         try {
           const username = await getUsername();
 

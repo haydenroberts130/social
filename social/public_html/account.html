@@ -1,16 +1,30 @@
-<!-- Ethan Wong -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>User Account</title>
         <link rel="stylesheet" href="./css/account.css" />
         <script src="client.js" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get the URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get("username");
+
+                // Update the content of the element with id "accTop"
+                const accTopElement = document.getElementById("accTop");
+                if (accTopElement) {
+                    accTopElement.innerHTML = `<h1>${username}</h1>`;
+                }
+            });
+        </script>
     </head>
     <body>
-        <input type="submit" value="Home" id="homeButton">
-        <div id = "header">
-            <span id = "accTop"><p>profile pic + name</p>
-            <h1 id = "displayName"></h1></span>
+        <input type="submit" value="Feed" id="homeButton" onclick="goToFeed()">
+        <div id="header">
+            <span id="accTop">
+                <p>profile pic + name</p>
+                <h1 id="displayName"></h1>
+            </span>
         </div>
 
         <div id="displayArea">
@@ -28,4 +42,3 @@
         </div>
     </body>
 </html>
-

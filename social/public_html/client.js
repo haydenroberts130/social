@@ -179,6 +179,10 @@ function goToAccount() {
   window.location.href = '/account.html';
 }
 
+function goToFeed() {
+  window.location.href = '/feed.html';
+}
+
 function searchUsers() {
   const userInput = document.getElementById('sAccounts').value;
   var list = document.getElementById('list');
@@ -188,11 +192,12 @@ function searchUsers() {
     .then((users) => {
       list.innerHTML = "";
       users.forEach((user) => {
+        console.log(user.username);
         const userElement = document.createElement("div");
         userElement.className = "listUsers"
 
         userElement.innerHTML = `
-        <a href="./account.html">${user.username}</a>`;
+        <a href=account.html?username=${user.username}>${user.username}</a>`;
         list.appendChild(userElement);
       });
     })
