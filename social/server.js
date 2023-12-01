@@ -3,17 +3,25 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+PORT = 80;
+
+mongoose.connection.on("error", () => {
+  console.log("MongoDB connection error");
+});
+
 //DB stuff
 const db = mongoose.Schema;
 const mongoDBURL = "mongodb://127.0.0.1/social";
 mongoose.connect(mongoDBURL, { useNewURLParser: true });
-db.on("error", console.error.bind(console, "MongoDB connection error"));
 
 // USER Schema
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  username: String,
+  email: String,
+  password: String,
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
@@ -31,11 +39,11 @@ module.exports = User;
 
 // POSTS Schema
 const postSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  image: { data: Buffer, contentType: String, required: true }, // Change the type to Buffer and include contentType
-  caption: { type: String },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  user: String,
+  image: String,
+  caption: String,
+  likes: Number,
+  comments: [String],
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -45,9 +53,9 @@ module.exports = Post;
 // COMMENTS Schema
 const commentSchema = new mongoose.Schema({
   post: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  text: { type: String, required: true },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  user: String,
+  text: String,
+  likes: Number,
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -85,10 +93,6 @@ function removeSessions() {
 
 setInterval(removeSessions, 2000);
 
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-
 // This function authenticates whether someone has logged in or not.
 // If they have not and they try to access home or post, they will be redirected back to login.
 function authenticate(req, res, next) {
@@ -109,6 +113,11 @@ function authenticate(req, res, next) {
   }
 }
 
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public_html/index.html");
+});
+
 app.use("/feed.html/", authenticate);
 app.get("/feed.html/", (req, res, next) => {
   console.log("another");
@@ -128,7 +137,7 @@ app.get("/account.html/", (req, res, next) => {
 });
 
 // Statically sends the html, css, and js to the server
-app.use(express.static("public_html"));
+app.use(express.static(__dirname + "/public_html"));
 
 app.post("/account/login", (req, res) => {
   console.log(sessions);
@@ -165,6 +174,10 @@ app.get("/get/posts/", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify(results, null, 2));
   });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
 
 
