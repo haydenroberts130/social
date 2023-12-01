@@ -15,7 +15,6 @@ body {
 
 
 #topContainer {
-  
   margin-top: 1%;
   border-radius: 10px;
   display: flex;
@@ -36,10 +35,18 @@ body {
 
 #header {
   flex-grow: 1;
+  width: 30%;
 }
 
 #sideBar {
   flex-grow: 2;
+  align-items: center;
+  width: 40%;
+}
+
+#rightSideBar {
+  width: 30%;
+  text-align: center;
 }
 
 .styled-button {
@@ -68,7 +75,7 @@ body {
 }
 
 #sAccounts {
-  width: 80%;
+  width: 100%;
   padding: 8px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
@@ -76,7 +83,7 @@ body {
 }
 
 #sideBar input[type="submit"] {
-  width: 80%;
+  width: 100%;
   padding: 10px;
   background-color: #125688;
   color: #fff;

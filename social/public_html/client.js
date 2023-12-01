@@ -179,44 +179,24 @@ function goToAccount() {
   window.location.href = '/account.html';
 }
 
-function addPost() {
-  const form = new FormData();
-  const photoInput = document.getElementById("photo").files[0];
-  const captionInput = document.getElementById("caption").value;
+function searchUsers() {
+  const userInput = document.getElementById('sAccounts').value;
+  var list = document.getElementById('list');
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get("username");
+  fetch("/search/users/" + userInput)
+    .then((response) => response.json())
+    .then((users) => {
+      list.innerHTML = "";
+      users.forEach((user) => {
+        const userElement = document.createElement("div");
+        userElement.className = "listUsers"
 
-
-  form.append('photo', photoInput);
-  form.append('caption', captionInput);
-  form.append('username', username);
-
-
-  fetch('/upload/post', {
-    method: 'POST',
-    body: form
-  })
-  .then(response => {
-    if (response.status === 201) {
-      return response.json();
-    } else if (response.status === 400) {
-      throw new Error('No image uploaded.');
-    } else {
-      throw new Error('Failed to add post.');
-    }
-  })
-  .then(data => {
-    if (data.imagePath) {
-      console.log('Post added successfully.');
-      // Display the uploaded image
-      let img = document.createElement('img');
-      img.src = data.imagePath;
-      document.body.appendChild(img);
-    }
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    alert(error.message);
-  });
+        userElement.innerHTML = `
+        <a href="./account.html">${user.username}</a>`;
+        list.appendChild(userElement);
+      });
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
