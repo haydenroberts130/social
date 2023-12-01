@@ -122,9 +122,10 @@
 
                 const likeButton = document.createElement("input");
                 likeButton.type = "submit";
-                likeButton.value = "<3";
+                likeButton.value = "<3 0";
                 likeButton.id = "likeButton";
                 likeButton.classList.add("styled-button");
+                likeButton.addEventListener('click', likePost);
 
                 postContentDiv.appendChild(captionSpan);
                 postContentDiv.appendChild(likeButton);

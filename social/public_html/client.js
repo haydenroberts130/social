@@ -263,3 +263,7 @@ async function addPost() {
     alert(error.message);
   }
 }
+
+function likePost() {
+  // to implement
+}
