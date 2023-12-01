@@ -130,25 +130,25 @@ setInterval(removeSessions, 600000);
 app.post("/account/login", async (req, res) => {
   console.log(sessions);
   let u = req.body;
-  
+
   try {
     let hashed = await bcrypt.hash(u.password, 10);
     console.log(hashed);
-    
+
     let user = await User.findOne({ username: u.username }).exec();
-    
+
     if (!user) {
       res.end("Could not find account");
     } else {
       // Use bcrypt.compare to compare hashed password
       const match = await bcrypt.compare(u.password, user.password);
-      
+
       if (match) {
         let sid = addSession(u.username);
         res.cookie(
           "login",
           { username: u.username, sessionID: sid },
-          { maxAge: 600000}
+          { maxAge: 600000 }
         );
         res.end("SUCCESS");
       } else {
@@ -179,7 +179,6 @@ app.get("/get/posts/", (req, res) => {
   });
 });
 
-
 // POST: Add a user
 app.post("/add/user", (req, res) => {
   const { username, password } = req.body;
@@ -200,15 +199,17 @@ app.post("/add/user", (req, res) => {
     .catch((err) => handleError(res, err));
 });
 
-app.get('/get/getFollowingList', (req, res) => {
+app.get("/get/getFollowingList", (req, res) => {
   const username = req.query.username;
 
   User.findOne({ username: username })
-    .populate('following', 'username')
+    .populate("following", "username")
     .exec()
     .then((user) => {
       if (user) {
-        const followingList = user.following.map((followedUser) => followedUser.username);
+        const followingList = user.following.map(
+          (followedUser) => followedUser.username
+        );
         res.json(followingList);
       } else {
         res.json([]);
@@ -216,15 +217,15 @@ app.get('/get/getFollowingList', (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: "Internal Server Error" });
     });
 });
 
-app.get('/get/getPostsFromUser', (req, res) => {
+app.get("/get/getPostsFromUser", (req, res) => {
   const username = req.query.username;
 
   User.findOne({ username: username })
-    .populate('posts') // Assuming 'posts' is an array of post documents
+    .populate("posts") // Assuming 'posts' is an array of post documents
     .exec()
     .then((user) => {
       if (user) {
@@ -240,8 +241,19 @@ app.get('/get/getPostsFromUser', (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: "Internal Server Error" });
     });
+});
+
+app.get("/get/usernameFromCookie", (req, res, next) => {
+  const cookies = req.cookies;
+
+  if (cookies && cookies.login && sessions[cookies.login.username]) {
+    const username = cookies.login.username;
+    res.send(username);
+  } else {
+    res.send(null);
+  }
 });
 
 const handleError = (res, err) => {
@@ -249,26 +261,20 @@ const handleError = (res, err) => {
   res.status(500).send(err);
 };
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
-
 // IMAGE UPLOADING CODE
-
-
-const multer = require('multer');
+const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/') // 'uploads/' is the folder where images will be saved
+    cb(null, "uploads/"); // 'uploads/' is the folder where images will be saved
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
-  }
+    cb(null, Date.now() + "-" + file.originalname);
+  },
 });
 
 const upload = multer({ storage: storage });
 
-app.post('/upload/post', upload.single('photo'), async (req, res) => {
+app.post("/upload/post", upload.single("photo"), async (req, res) => {
   const caption = req.body.caption;
   const username = req.body.username; // Assuming username is sent along with the form
 
@@ -280,19 +286,22 @@ app.post('/upload/post', upload.single('photo'), async (req, res) => {
       user: username,
       imagePath: imagePath,
       caption: caption,
-    })
+    });
 
-    newPost.save()
+    newPost.save();
 
-    User.findOne({username:username})
-    .then((user) => {
+    User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
       p.then((result) => {
         res.redirect("/feed.html");
-      })
-    })
+      });
+    });
   } else {
     res.status(400).send("No image uploaded");
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
