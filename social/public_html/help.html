@@ -1,51 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Help Center</title>
     <link rel="stylesheet" href="./css/help.css" />
     <script src="client.js" defer></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="topContainer">
-        <div id="header">
-            <span id="accTop">
-                <p>profile pic + name</p>
-                <h1 id="displayName"></h1>
-            </span>
-        </div>
-        <div id="sideBar">
-            <h1 id="sAccounts">Help Center</h1>
-        </div>
-        <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()">
-        <input type="submit" value="Logout" id="logoutButton" class="styled-button">
-        <input type="submit" value="Feed" id="feedButton" class="styled-button" onclick="goToFeed()">
+      <div id="header">
+        <span id="accTop">
+          <h1 id="displayName"></h1>
+        </span>
+        <script>
+          const getUsername = () => {
+            return fetch("/get/usernameFromCookie").then((response) => {
+              if (!response.ok) {
+                throw new Error("Failed to fetch username");
+              }
+              return response.text();
+            });
+          };
+
+          getUsername()
+            .then((username) => {
+              console.log("Username:", username);
+              document.getElementById(
+                "displayName"
+              ).innerText = `Happy to help, ${username}!`;
+            })
+            .catch((error) => {
+              console.error("Error:", error.message);
+            });
+        </script>
+      </div>
+      <div id="sideBar">
+        <h1 id="sAccounts">Help Center</h1>
+      </div>
+      <input
+        type="submit"
+        value="+"
+        id="postButton"
+        class="styled-button"
+        onclick="goToPost()"
+      />
+      <input
+        type="submit"
+        value="Logout"
+        id="logoutButton"
+        class="styled-button"
+      />
+      <input
+        type="submit"
+        value="Feed"
+        id="feedButton"
+        class="styled-button"
+        onclick="goToFeed()"
+      />
     </div>
     <div id="displayArea">
-        <h1 id ="titleText">Social Features</h1>
-        <div class="post">
-            <h2 id ="titleText">Your Profile</h2>
+      <h1 id="titleText">Social Features</h1>
+      <div class="post">
+        <h2 id="titleText">Your Profile</h2>
+      </div>
 
-        </div>
+      <div class="post">
+        <h2 id="titleText">Sharing Photos</h2>
+      </div>
 
-        <div class="post">
-            <h2 id ="titleText">Sharing Photos</h2>
+      <div class="post">
+        <h2 id="titleText">Viewing Photos</h2>
+      </div>
 
-        </div>
-
-        <div class="post">
-            <h2 id ="titleText">Viwing Photos</h2>
-
-        </div>
-
-        <h1 id ="titleText">Account Management</h1>
-        <div class="post">
-            <h2 id ="titleText">Signing up and Getting Started</h2>
-
-        </div>
-
+      <h1 id="titleText">Account Management</h1>
+      <div class="post">
+        <h2 id="titleText">Signing up and Getting Started</h2>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
