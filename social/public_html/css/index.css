@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .login {
@@ -30,7 +31,7 @@ body {
 }
 
 .social-container img {
-    width: 60px; /* Adjust the width as needed */
+    width: 80px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
     margin-right: 10px; /* Space between image and heading */
 }
@@ -44,7 +45,6 @@ div {
 }
 
 .heading {
-    /* color: #333; */
     color: #125688;
     font-size: 40px;
     padding: 30px;
@@ -111,4 +111,13 @@ h1 {
 
 #createButton:hover {
     background-color: #125688;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-container label {
+    width: 100px; /* Adjust the width based on your preference */
 }
