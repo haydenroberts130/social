@@ -234,3 +234,27 @@ function goToAccount() {
   window.location.href = '/account.html';
 }
 
+
+
+function searchUsers() {
+  const userInput = document.getElementById('sAccounts').value;
+  var sidebar = document.getElementById('sidebar');
+
+  fetch("/search/users/" + userInput)
+    .then((response) => response.json())
+    .then((users) => {
+      users.forEach((user) => {
+        const userElement = document.createElement("div");
+        userElement.className = "listUsers"
+
+        // userElement.innerHTML = `
+        // <a href="./account.html">${user.username}</a>`;
+        userElement.innerHTML = `
+        <p>YAY IT WORKED</p>`;
+        sidebar.appendChild(userElement);
+      });
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}

@@ -230,4 +230,18 @@ app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
+// GET request for getting all the users with the substring KEYWORD
+app.get("/search/users/:KEYWORD", (req, res) => {
+  var keyword = req.params.KEYWORD;
 
+  const users = User.find({
+    username: { $regex: keyword, $options: 'i' }, // Using regex for substring search, 'i' for case-insensitive search
+  }).exec();
+
+  users
+    .then((document) => res.json(document))
+    .catch((error) => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+});
