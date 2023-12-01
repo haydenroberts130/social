@@ -186,3 +186,9 @@ hr {
     margin-left: auto;
     /* Pushes the button to the right */
 }
+
+.helpText{
+    text-align: left;
+    margin: 8px;
+    padding: 10px;
+}
