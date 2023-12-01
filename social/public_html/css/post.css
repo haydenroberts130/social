@@ -21,6 +21,12 @@ body {
   align-items: center;
 }
 
+.topContainer {
+  border-radius: 10px;
+  /* display: flex; */
+  align-items: center;
+}
+
 .add-element {
   max-width: 600px;
   margin: 50px auto;
@@ -74,4 +80,21 @@ input[type="button"] {
 
 input[type="button"]:hover {
   background-color: #0d456c;
+}
+
+.styled-button {
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.styled-button:hover {
+  background-color: #0d456c;
+}
+
+#buttonBar{
+  width: 30%;
 }

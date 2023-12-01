@@ -13,89 +13,38 @@
             throw new Error("Failed to fetch username.");
           }
 
-          const username = await response.text();
-          const followButton = document.getElementById("followButton");
-
-          // Get the account username from the URL
-          const urlParams = new URLSearchParams(window.location.search);
-          const accUsername = urlParams.get("username");
-
-          // Update the content of the element with id "accTop"
-          const accTopElement = document.getElementById("accTop");
-          if (accTopElement) {
-            accTopElement.innerHTML = `<h1>${accUsername}</h1>`;
-          }
-
-          // Fetch the follow status from the server
-          const followStatusResponse = await fetch(
-            `/check-follow/${username}/${accUsername}`
-          );
-
-          if (!followStatusResponse.ok) {
-            throw new Error("Failed to fetch follow status.");
-          }
-
-          let isFollowing = await followStatusResponse.json();
-
-          updateFollowButton(isFollowing, followButton, accTopElement);
-
-          followButton.addEventListener("click", async function () {
-            const followAction = isFollowing ? "unfollow" : "follow";
-            const followResponse = await fetch(
-              `/${followAction}/${username}/${accUsername}`,
-              {
-                method: "POST",
-              }
-            );
-
-            if (!followResponse.ok) {
-              throw new Error(`Failed to ${followAction} user.`);
-            }
-
-            isFollowing = !isFollowing;
-
-            updateFollowButton(isFollowing, followButton, accTopElement);
-          });
-        } catch (error) {
-          console.error("Error:", error.message);
-          alert(error.message);
-        }
-      });
-
-      function updateFollowButton(isFollowing, followButton, accTopElement) {
-        if (isFollowing) {
-          followButton.value = "Unfollow";
-          followButton.style.backgroundColor = "red";
-        } else {
-          followButton.value = "Follow";
-          followButton.style.backgroundColor = "green";
-        }
-
-        // Remove existing followButton from accTopElement
-        const existingFollowButton = accTopElement.querySelector("#followButton");
-        if (existingFollowButton) {
-          accTopElement.removeChild(existingFollowButton);
-        }
-
-        // Append the updated followButton to accTopElement
-        accTopElement.appendChild(followButton);
-      }
-    </script>
-  </head>
-  <body>
-    <input type="submit" value="Feed" id="homeButton" onclick="goToFeed()" />
-    <div id="header">
-      <span id="accTop">
-        <h1 id="displayName"></h1>
-        <input type="submit"  id="followButton" />
-      </span>
-    </div>
-
-    <div id="displayArea">
-      <div class="post">
-        <div>username</div>
-        <div class="post-image">
-          <img src="./img/testing.jpeg" alt="TESTING PICTURE" />
+                // Update the content of the element with id "accTop"
+                const accTopElement = document.getElementById("accTop");
+                if (accTopElement) {
+                    accTopElement.innerHTML = `<h1>${username}</h1>`;
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div id ="buttonBar">
+            <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()" />
+            <input type="submit" value="Logout" id="logoutButton" class="styled-button" onclick="logout()"/>
+            <input type="submit" value="Feed" id="homeButton" class="styled-button" onclick="goToFeed()" />
+        </div>
+        <div id="header">
+            <span id="accTop">
+                <p>profile pic + name</p>
+                <h1 id="displayName"></h1>
+            </span>
+        </div>
+        <div id="displayArea">
+            <div class="post">
+                <div>username</div>
+                <div class="post-image">
+                    <img src="./img/testing.jpeg" alt="TESTING PICTURE">
+                </div>
+                <hr> <!-- This creates a visible line between the image and the caption -->
+                <div class="post-content">
+                    <span>caption goes here</span>
+                    <input type="submit" value="<3" id="likeButton" class="styled-button">
+                </div>
+            </div>
         </div>
         <hr />
         <!-- This creates a visible line between the image and the caption -->
