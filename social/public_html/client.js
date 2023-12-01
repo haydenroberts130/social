@@ -41,61 +41,6 @@ function goToHelp() {
   window.location.href = 'help.html';
 }
 
-// Function to add a post
-function addPost() {
-  const photoInput = document.getElementById("photo");
-  const captionInput = document.getElementById("caption");
-  const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get("username");
-
-  // Convert the selected image file to a base64-encoded string
-  const photoFile = photoInput.files[0];
-  if (!photoFile) {
-    console.error("Please select an image.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onloadend = function () {
-    const base64Data = reader.result.split(",")[1];
-
-    // Prepare the data for the POST request
-    const postData = {
-      user: username,
-      image: {
-        data: base64Data,
-        contentType: photoFile.type,
-      },
-      caption: captionInput.value,
-      likes: [],
-      comments: [],
-    };
-
-    // Send the POST request
-    fetch(`/add/post/${username}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    })
-      .then((response) => {
-        if (response.status === 201) {
-          console.log("Post added successfully.");
-          window.location.href = `feed.html`;
-        } else {
-          console.error("Failed to add post.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  // Read the image file as a data URL
-  reader.readAsDataURL(photoFile);
-}
-
 // Function to log in a user
 function login() {
   const username = document.getElementById("loginUsername").value;

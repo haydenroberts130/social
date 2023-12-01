@@ -224,7 +224,7 @@ app.get('/get/getPostsFromUser', (req, res) => {
   const username = req.query.username;
 
   User.findOne({ username: username })
-    .populate('posts')
+    .populate('posts') // Assuming 'posts' is an array of post documents
     .exec()
     .then((user) => {
       if (user) {
@@ -243,18 +243,6 @@ app.get('/get/getPostsFromUser', (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 });
-
-app.get("/get/usernameFromCookie", (req, res, next) => {
-  const cookies = req.cookies;
-
-  if (cookies && cookies.login && sessions[cookies.login.username]) {
-    const username = cookies.login.username;
-    res.send(username);
-  } else {
-    res.send(null);
-  }
-});
-
 
 const handleError = (res, err) => {
   console.error(err);
@@ -292,16 +280,18 @@ app.post('/upload/post', upload.single('photo'), async (req, res) => {
       user: username,
       imagePath: imagePath,
       caption: caption,
-    });
+    })
 
-    try {
-      await newPost.save();
-      // res.status(201).send("Post created successfully");
-      res.status(201).json({ imagePath: req.file.path });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Error creating post");
-    }
+    newPost.save()
+
+    User.findOne({username:username})
+    .then((user) => {
+      user.posts.push(newPost._id);
+      let p = user.save();
+      p.then((result) => {
+        res.redirect("/feed.html");
+      })
+    })
   } else {
     res.status(400).send("No image uploaded");
   }
