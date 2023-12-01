@@ -224,7 +224,7 @@ app.get('/get/getPostsFromUser', (req, res) => {
   const username = req.query.username;
 
   User.findOne({ username: username })
-    .populate('posts') // Assuming 'posts' is an array of post documents
+    .populate('posts')
     .exec()
     .then((user) => {
       if (user) {
@@ -243,6 +243,18 @@ app.get('/get/getPostsFromUser', (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 });
+
+app.get("/get/usernameFromCookie", (req, res, next) => {
+  const cookies = req.cookies;
+
+  if (cookies && cookies.login && sessions[cookies.login.username]) {
+    const username = cookies.login.username;
+    res.send(username);
+  } else {
+    res.send(null);
+  }
+});
+
 
 const handleError = (res, err) => {
   console.error(err);

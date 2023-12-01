@@ -82,7 +82,7 @@ function addPost() {
       .then((response) => {
         if (response.status === 201) {
           console.log("Post added successfully.");
-          window.location.href = `feed.html?username=${username}`;
+          window.location.href = `feed.html`;
         } else {
           console.error("Failed to add post.");
         }
@@ -116,7 +116,7 @@ function login() {
     .then((response) => {
       if (response.status === 200) {
         // Login successful, redirect to a new page or perform other actions.
-        window.location.href = `/feed.html?username=${username}`;
+        window.location.href = `/feed.html`;
       } else {
         // Login failed, display an error message.
         const loginError = document.getElementById("loginError");
