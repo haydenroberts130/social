@@ -161,6 +161,22 @@ app.post("/account/login", async (req, res) => {
   }
 });
 
+app.post("/account/logout", (req, res) => {
+  const cookies = req.cookies;
+  if (cookies && cookies.login) {
+    const username = cookies.login.username;
+    if (sessions[username]) {
+      delete sessions[username];
+      res.clearCookie("login");
+      res.end("Logged out successfully");
+    } else {
+      res.status(400).end("No active session");
+    }
+  } else {
+    res.status(400).end("No active session");
+  }
+});
+
 // GET request for getting all the users from the database
 app.get("/get/users", (req, res) => {
   let users = User.find({}).exec();

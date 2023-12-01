@@ -73,6 +73,24 @@ function login() {
     });
 }
 
+// Function to log out a user
+function logout() {
+  fetch("/account/logout", {
+    method: "POST",
+    credentials: 'include'
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      window.location.href = "/index.html";
+    } else {
+      console.error("Logout failed");
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+}
+
 // document.addEventListener("DOMContentLoaded", function () {
 //   const searchPostsButton = document.querySelector("#searchPostsButton");
 //   const resultsContainer = document.querySelector("#results");
