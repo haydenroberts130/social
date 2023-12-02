@@ -29,7 +29,7 @@ body {
   width: 30%;
   border-radius: 10px;
   position: relative;
-  top: 20px;
+  /* top: 20px; */
   margin: 20px auto 20px auto; /* Updated margin for centering */
 }
 
@@ -61,8 +61,6 @@ body {
   position: fixed;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  padding-bottom: 40px;
   width: 200px;
   margin: 20px 0;
 }
@@ -70,7 +68,6 @@ body {
 #sideBar input[type="submit"] {
   width: 100%;
   padding: 10px;
-  margin-bottom: 40px;
   background-color: #125688;
   color: #fff;
   border: none;
@@ -91,7 +88,7 @@ body {
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 20px;
-  margin-top: 40px;
+  margin-top: 25px;
   min-height: 75%;
   left: 8%;
   width: 80%;
