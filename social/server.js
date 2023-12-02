@@ -424,38 +424,25 @@ app.delete('/delete/post/:postId', async (req, res) => {
   }
 });
 
+//EDIT EDIT EDIT
 
-////////////////////////////////////////////////////
-// COMMENT STUFF
-////////////////////////////////////////////////////
+app.post('/update/post/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const { caption } = req.body;
 
-app.post("/upload/comment", async (req, res) => {
-  const user = req.body.user;
-  const text = req.body.text; // Assuming username is sent along with the form
-  const ID = req.body.post;
+  try {
+      const post = await Post.findById(postId);
 
-  if (req.file) {
+      if (!post) {
+          return res.status(404).json({ success: false, message: 'Post not found' });
+      }
 
+      post.caption = caption;
+      await post.save();
 
-
-    // Create a new post
-    const newComment = new Comment({
-      user: user,
-      text: text,
-      likes: 0,
-    });
-
-    newComment.save();
-    // console.log('CHECKPOINT ALPHA');
-
-    Post.findOne({ _id: ID }).then((post) => {
-      post.comments.push(newComment._id);
-      let p = post.save();
-      // console.log('CHECKPOINT BRAVO');
-      p.then((result) => {
-        // console.log('CHECKPOINT CHARLIE');
-        // res.redirect("/feed.html");
-      });
-    });
+      res.json({ success: true, message: 'Caption updated successfully' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server Error' });
   }
 });

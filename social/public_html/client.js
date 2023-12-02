@@ -309,25 +309,28 @@ async function showPosts() {
           postElement.className = 'post'; 
           postElement.id = `post_${post._id}`;
 
-          let deleteButtonHTML = ''; // Initialize deleteButtonHTML for each post
-          if (loggedInUsername === post.user) {
-            deleteButtonHTML = `<button style="font-size: 20px;" class="styled-button" onclick="deletePost('${post._id}')">Delete Post</button>`;
-          }
+          let deleteButtonHTML = '';
+        let editButtonHTML = '';
 
-          postElement.innerHTML = `
-              <div>${post.user}</div>
-              <div class="post-image">
-                  <img src="./${post.image}" alt="${post.caption}">
-              </div>
-              <hr>
-              <div class="post-box">
-              <span>${post.caption}</span>
-              <div class="post-content">
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
-                  ${deleteButtonHTML}
-              </div>
-              </div>
-          `;
+        if (loggedInUsername === post.user) {
+            deleteButtonHTML = `<button onclick="deletePost('${post._id}')" class="styled-button">Delete Post</button>`;
+            editButtonHTML = `<button onclick="editCaption('${post._id}')" class="styled-button">Edit</button>`;
+        }
+
+        postElement.innerHTML = `
+            <div>${post.user}</div>
+            <div class="post-image">
+                <img src="./${post.image}" alt="${post.caption}">
+            </div>
+            <hr>
+            <div class="post-content">
+                <div id="caption_${post._id}" class="post-caption">${post.caption}</div>
+                <input type="text" id="edit_caption_${post._id}" class="edit-caption-input" style="display:none;" value="${post.caption}">
+                ${editButtonHTML}
+                <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
+                ${deleteButtonHTML}
+            </div>
+        `;
           disp.appendChild(postElement);
         });
       }
@@ -349,6 +352,42 @@ function deletePost(postId) {
       })
       .catch(error => console.error('Error:', error));
   }
+}
+
+// TEST TEST TEST
+function editCaption(postId) {
+    const captionDiv = document.getElementById(`caption_${postId}`);
+    const editCaptionInput = document.getElementById(`edit_caption_${postId}`);
+    const isEditing = editCaptionInput.style.display === 'none';
+
+    if (isEditing) {
+        // Switch to edit mode
+        captionDiv.style.display = 'none';
+        editCaptionInput.style.display = 'block';
+    } else {
+        // Confirm the edit
+        const updatedCaption = editCaptionInput.value;
+        captionDiv.textContent = updatedCaption;
+        captionDiv.style.display = 'block';
+        editCaptionInput.style.display = 'none';
+
+        fetch(`/update/post/${postId}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ caption: updatedCaption })
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              console.log('Caption updated successfully');
+          } else {
+              console.error('Failed to update caption');
+          }
+      })
+      .catch(error => console.error('Error:', error));
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
