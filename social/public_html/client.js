@@ -77,18 +77,18 @@ function login() {
 function logout() {
   fetch("/account/logout", {
     method: "POST",
-    credentials: 'include'
+    credentials: "include",
   })
-  .then((response) => {
-    if (response.status === 200) {
-      window.location.href = "/index.html";
-    } else {
-      console.error("Logout failed");
-    }
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
+    .then((response) => {
+      if (response.status === 200) {
+        window.location.href = "/index.html";
+      } else {
+        console.error("Logout failed");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 // document.addEventListener("DOMContentLoaded", function () {
@@ -265,65 +265,84 @@ async function addPost() {
 }
 
 function likePost(postId) {
-  fetch(`/likePost/${postId}`, { method: 'POST' })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success) {
-            // Update the like count on the page
-            document.getElementById(`like_count_${postId}`).innerText = data.newLikeCount;
-        }
+  fetch(`/likePost/${postId}`, { method: "POST" })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Update the like count on the page
+        document.getElementById(`like_count_${postId}`).innerText =
+          data.newLikeCount;
+      }
     })
-    .catch(error => console.error('Error:', error));
+    .catch((error) => console.error("Error:", error));
 }
 
-function showPosts() {
+async function showPosts() {
   const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get("username");
+  const usernameFromURL = urlParams.get("username");
 
-  var disp = document.getElementById('displayArea');
+  var disp = document.getElementById("displayArea");
 
-  fetch('/get/posts/' + username)
-    .then((response) => response.json())
-    .then((posts) => {
-      disp.innerHTML = ''; // Clear previous posts
+  try {
+    // Fetch the username from the server
+    const responseUsername = await fetch("/get/usernameFromCookie");
+    const loggedInUsernamePromise = responseUsername.text();
+    const loggedInUsername = await loggedInUsernamePromise;
+    
+    // Fetch posts for the specified username
+    const responsePosts = await fetch("/get/posts/" + usernameFromURL);
+    const posts = await responsePosts.json();
 
-      if (posts.length === 0) {
-        // If there are no posts, display a message
-        const noPostsMessage = document.createElement('h1');
+    disp.innerHTML = ""; // Clear previous posts
+    console.log(loggedInUsername, usernameFromURL);
+    console.log(loggedInUsername == usernameFromURL);
+    console.log(loggedInUsername === usernameFromURL);
+    // User is logged in and looking at their own account
+    if (posts.length === 0) {
+      // If there are no posts, display a message
+      const noPostsMessage = document.createElement("h1");
+      if (loggedInUsername === usernameFromURL) {
         noPostsMessage.textContent = "Upload posts to see them here!";
-        noPostsMessage.style.color = "#808080";
-        noPostsMessage.style.textAlign = "center";
-        disp.appendChild(noPostsMessage);
       } else {
-        // Display posts if there are any
-        posts.forEach(post => {
-          const postElement = document.createElement('div');
-          postElement.className = 'post'; // Set class name
+        noPostsMessage.textContent = "This user has no posts yet.";
+      }
+      noPostsMessage.style.color = "#808080"; // Gray color
+      noPostsMessage.style.textAlign = "center";
+      disp.appendChild(noPostsMessage);
+    } else {
+      // Display posts if there are any
+      posts.forEach((post) => {
+        const postElement = document.createElement("div");
+        postElement.className = "post"; // Set class name
 
-          console.log(post.image);
-
-          // Creating the HTML structure based on your example
-          postElement.innerHTML = `
-              <div>${post.user}</div>
-              <div class="post-image">
-                  <img src="./${post.image}" alt="${post.caption}">
-              </div>
-              <hr>
-              <div class="post-content">
-                  <span>${post.caption}</span>
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post.id}')">❤</button>
-              </div>
+        // Creating the HTML structure based on your example
+        postElement.innerHTML = `
+            <div>${post.user}</div>
+            <div class="post-image">
+              <img src="./${post.image}" alt="${post.caption}">
+            </div>
+            <hr>
+            <div class="post-content">
+              <span>${post.caption}</span>
+              <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
+            </div>
           `;
 
-          disp.appendChild(postElement);
-        });
-      }
-    });
+        disp.appendChild(postElement);
+      });
+    }
+  } catch (error) {
+    // Handle error, you can use the handleError function if needed
+    console.error(error);
+  }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   // Check if the current page is account.html
-  if (window.location.pathname.endsWith('/account.html') || window.location.pathname.endsWith('account.html')) {
+  if (
+    window.location.pathname.endsWith("/account.html") ||
+    window.location.pathname.endsWith("account.html")
+  ) {
     showPosts();
   }
 });
