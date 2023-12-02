@@ -225,8 +225,8 @@ body {
 
 .post-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: right;
+  margin-left: auto;
 }
 
 hr {
@@ -253,4 +253,10 @@ hr {
 
 .styled-button:hover {
   background-color: #0d456c;
+}
+
+.post-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

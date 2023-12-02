@@ -311,7 +311,7 @@ async function showPosts() {
 
           let deleteButtonHTML = ''; // Initialize deleteButtonHTML for each post
           if (loggedInUsername === post.user) {
-            deleteButtonHTML = `<button onclick="deletePost('${post._id}')">Delete Post</button>`;
+            deleteButtonHTML = `<button style="font-size: 20px;" class="styled-button" onclick="deletePost('${post._id}')">Delete Post</button>`;
           }
 
           postElement.innerHTML = `
@@ -320,10 +320,12 @@ async function showPosts() {
                   <img src="./${post.image}" alt="${post.caption}">
               </div>
               <hr>
+              <div class="post-box">
+              <span>${post.caption}</span>
               <div class="post-content">
-                  <span>${post.caption}</span>
                   <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
                   ${deleteButtonHTML}
+              </div>
               </div>
           `;
           disp.appendChild(postElement);
@@ -348,8 +350,6 @@ function deletePost(postId) {
       .catch(error => console.error('Error:', error));
   }
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
   // Check if the current page is account.html
