@@ -412,3 +412,28 @@ app.get('/get/posts/:username', function (req, res) {
       res.status(500).send('Server error');
     });
 });
+
+// DELETE
+app.delete('/delete/post/:postId', async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+      const post = await Post.findById(postId);
+
+      if (!post) {
+          return res.status(404).json({ success: false, message: 'Post not found' });
+      }
+
+      await Post.deleteOne({ _id: postId });
+
+      await User.updateOne(
+          { posts: postId },
+          { $pull: { posts: postId } }
+      );
+
+      res.json({ success: true, message: 'Post deleted successfully' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server Error' });
+  }
+});

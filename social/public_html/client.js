@@ -277,67 +277,77 @@ function likePost(postId) {
     .catch((error) => console.error("Error:", error));
 }
 
-async function showPosts() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const usernameFromURL = urlParams.get("username");
-
-  var disp = document.getElementById("displayArea");
-
-  try {
-    // Fetch the username from the server
-    const responseUsername = await fetch("/get/usernameFromCookie");
-    const loggedInUsernamePromise = responseUsername.text();
-    const loggedInUsername = await loggedInUsernamePromise;
-    
-    // Fetch posts for the specified username
-    const responsePosts = await fetch("/get/posts/" + usernameFromURL);
-    const posts = await responsePosts.json();
-
-    disp.innerHTML = ""; // Clear previous posts
-    console.log(loggedInUsername, usernameFromURL);
-    console.log(loggedInUsername == usernameFromURL);
-    console.log(loggedInUsername === usernameFromURL);
-    // User is logged in and looking at their own account
-    if (posts.length === 0) {
-      // If there are no posts, display a message
-      const noPostsMessage = document.createElement("h1");
-      if (loggedInUsername === usernameFromURL) {
-        noPostsMessage.textContent = "Upload posts to see them here!";
-      } else {
-        noPostsMessage.textContent = "This user has no posts yet.";
-      }
-      noPostsMessage.style.color = "#808080"; // Gray color
-      noPostsMessage.style.textAlign = "center";
-      disp.appendChild(noPostsMessage);
-    } else {
-      // Display posts if there are any
-      posts.forEach((post) => {
-        const postElement = document.createElement("div");
-        postElement.className = "post"; // Set class name
-
-        // Creating the HTML structure based on your example
-        postElement.innerHTML = `
-            <div>${post.user}</div>
-            <div class="post-image">
-              <img src="./${post.image}" alt="${post.caption}">
-            </div>
-            <hr>
-            <div class="post-content">
-              <span>${post.caption}</span>
-              <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
-            </div>
-          `;
-
-        disp.appendChild(postElement);
-      });
-    }
-  } catch (error) {
-    // Handle error, you can use the handleError function if needed
-    console.error(error);
-  }
+async function getCurrentUsername() {
+  // Fetch the username from the server
+  const response = await fetch("/get/usernameFromCookie");
+  const username = await response.text();
+  return username;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+async function showPosts() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get("username");
+  const loggedInUsername = await getCurrentUsername(); 
+  var disp = document.getElementById('displayArea');
+
+  fetch('/get/posts/' + username)
+    .then((response) => response.json())
+    .then((posts) => {
+      disp.innerHTML = ''; // Clear previous posts
+
+      if (posts.length === 0) {
+        // If there are no posts, display a message
+        const noPostsMessage = document.createElement('h1');
+        noPostsMessage.textContent = "Upload posts to see them here!";
+        noPostsMessage.style.color = "#808080";
+        noPostsMessage.style.textAlign = "center";
+        disp.appendChild(noPostsMessage);
+      } else {
+        // Display posts if there are any
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'post'; 
+          postElement.id = `post_${post.id}`;
+
+          let deleteButtonHTML = ''; // Initialize deleteButtonHTML for each post
+          if (loggedInUsername === post.user) {
+            deleteButtonHTML = `<button onclick="deletePost('${post.id}')">Delete Post</button>`;
+          }
+
+          postElement.innerHTML = `
+              <div>${post.user}</div>
+              <div class="post-image">
+                  <img src="./${post.image}" alt="${post.caption}">
+              </div>
+              <hr>
+              <div class="post-content">
+                  <span>${post.caption}</span>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post.id}')">❤</button>
+                  ${deleteButtonHTML}
+              </div>
+          `;
+
+          disp.appendChild(postElement);
+        });
+      }
+    });
+}
+
+// DELETE POST
+function deletePost(postId) {
+  fetch(`/delete/post/${postId}`, { method: 'DELETE' })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the post client side
+            document.getElementById(`post_${postId}`).remove();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
   // Check if the current page is account.html
   if (
     window.location.pathname.endsWith("/account.html") ||
