@@ -264,6 +264,14 @@ async function addPost() {
   }
 }
 
-function likePost() {
-  // to implement
+function likePost(postId) {
+  fetch(`/likePost/${postId}`, { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // Update the like count on the page
+            document.getElementById(`like_count_${postId}`).innerText = data.newLikeCount;
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }

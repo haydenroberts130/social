@@ -341,104 +341,20 @@ app.get("/search/users/:KEYWORD", (req, res) => {
     });
 });
 
-app.get("/check-follow/:username/:accUsername", async (req, res) => {
+//Like
+app.post('/likePost/:postId', async (req, res) => {
   try {
-    const { username, accUsername } = req.params;
-
-    // Find the user and the user they want to check
-    const user = await User.findOne({ username });
-    const accUser = await User.findOne({ username: accUsername });
-
-    if (!user || !accUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if the user is following accUser
-    const isFollowing = user.following.includes(accUser._id);
-
-    res.json(isFollowing);
+      const postId = req.params.postId;
+      const post = await Post.findById(postId);
+      if (post) {
+          post.likes += 1;
+          await post.save();
+          res.json({ success: true, newLikeCount: post.likes });
+      } else {
+          res.status(404).json({ success: false, message: 'Post not found' });
+      }
   } catch (error) {
-    console.error(error);
-    res.status(500).json(false); // Return false in case of an error
-  }
-});
-
-app.post("/follow/:username/:accUsername", async (req, res) => {
-  try {
-    const accUsername = req.params.accUsername;
-    const username = req.params.username;
-
-    // Find the user and the user they want to follow
-    const user = await User.findOne({ username });
-    const accUser = await User.findOne({ username: accUsername });
-
-    if (!user || !accUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if the user is not already following the other user
-    if (!user.following.includes(accUser._id)) {
-      // If not, follow the user
-      user.following.push(accUser._id);
-      accUser.followers.push(user._id);
-
-      // Use findOneAndUpdate with the document's current version
-      await User.findOneAndUpdate(
-        { _id: user._id, __v: user.__v },
-        { following: user.following },
-        { new: true, lean: true }
-      );
-
-      await User.findOneAndUpdate(
-        { _id: accUser._id, __v: accUser.__v },
-        { followers: accUser.followers },
-        { new: true, lean: true }
-      );
-    }
-
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.post("/unfollow/:username/:accUsername", async (req, res) => {
-  try {
-    const accUsername = req.params.accUsername;
-    const username = req.params.username;
-
-    // Find the user and the user they want to unfollow
-    const user = await User.findOne({ username });
-    const accUser = await User.findOne({ username: accUsername });
-
-    if (!user || !accUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if the user is following the other user
-    if (user.following.includes(accUser._id)) {
-      // If yes, unfollow the user
-      user.following = user.following.filter((id) => id.toString() !== accUser._id.toString());
-      accUser.followers = accUser.followers.filter((id) => id.toString() !== user._id.toString());
-
-      // Use findOneAndUpdate with the document's current version
-      await User.findOneAndUpdate(
-        { _id: user._id, __v: user.__v },
-        { following: user.following },
-        { new: true, lean: true }
-      );
-
-      await User.findOneAndUpdate(
-        { _id: accUser._id, __v: accUser.__v },
-        { followers: accUser.followers },
-        { new: true, lean: true }
-      );
-    }
-
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
