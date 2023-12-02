@@ -130,7 +130,11 @@
                 likeButton.id = `like_count_${post._id}`;
                 likeButton.style.fontSize = "20px";
                 likeButton.classList.add("styled-button");
-                likeButton.textContent = "❤ " + post.likes;
+                if (post.likes == null) {
+                  likeButton.textContent = "❤ 0";
+                } else {
+                  likeButton.textContent = "❤ " + post.likes;
+                }
                 likeButton.addEventListener("click", function () {
                   likePost(post._id);
                 });
