@@ -318,7 +318,7 @@ async function showPosts() {
           }
 
           postElement.innerHTML = `
-              <div>${post.user}</div>
+              <div><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${post.user}</a></div>
               <div class="post-image">
                   <img src="./${post.image}" alt="${post.caption}">
               </div>
