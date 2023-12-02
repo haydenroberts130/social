@@ -104,13 +104,15 @@
                 postDiv.classList.add("post");
 
                 const postUsernameDiv = document.createElement("div");
-                postUsernameDiv.textContent = post.username;
+                postUsernameDiv.textContent = post.user;
 
                 const postImageDiv = document.createElement("div");
                 postImageDiv.classList.add("post-image");
+
                 const postImage = document.createElement("img");
-                postImage.src = post.imageUrl;
-                postImage.alt = "Post Image";
+                postImage.src = `./${post.image}`;
+                postImage.alt = post.caption;
+
                 postImageDiv.appendChild(postImage);
 
                 const hrDiv = document.createElement("hr");

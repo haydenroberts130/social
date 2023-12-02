@@ -246,9 +246,11 @@ app.get("/get/getPostsFromUser", (req, res) => {
     .then((user) => {
       if (user) {
         const posts = user.posts.map((post) => ({
-          username: post.username,
-          imageUrl: post.imageUrl,
+          user: post.user,
+          image: post.image,
           caption: post.caption,
+          comments: post.comments,
+          date: post.createdAt
         }));
         res.json(posts);
       } else {
