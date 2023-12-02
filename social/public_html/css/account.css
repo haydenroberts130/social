@@ -7,207 +7,197 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* 
-body {
-  font-family: "Arial", sans-serif;
-  background: linear-gradient(to bottom, #F58529, #DD2A7B);
-  background-size: cover;
-  background-attachment: fixed; 
-  height: 100vh;
-  overflow-x: hidden; 
-} */
 
 body {
   font-family: "Arial", sans-serif;
-  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background: linear-gradient(to bottom, #f58529, #dd2a7b);
   background-size: cover;
-  background-attachment: fixed; 
-  min-height: 100vh; /* Instead of height: 100vh; */
+  background-attachment: fixed;
+  min-height: 100vh;
   overflow-x: hidden;
-  overflow-y: auto; /* Ensure vertical scrolling is allowed */
+  overflow-y: auto;
 }
 
+#helpButtom {
+  bottom: 5%;
+  left: 5%;
+}
 
-  #helpButtom {
-    bottom:5%;
-    left: 5%;
-  }
-  
-  #header {
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 30%;
-    border-radius: 10px;
-    margin: 0 auto; /* Centers the header horizontally */
-    position: relative; /* Adjust if needed */
-    top: 1%;
-  }
-  
-  /* #homeButton {
-    left: 30%;
-  } */
+#header {
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 30%;
+  border-radius: 10px;
+  margin: 0 auto;
+  position: relative;
+  top: 1%;
+}
 
-  #accTop {
-    text-align: center;
-  }
-  
-  #sideBar {
-    border-radius: 10px;
-    left: 1%;
-    min-height: 85%; /* Adjust as needed */
-    position: fixed;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    padding-bottom: 40px;
-    width: 200px; /* Adjust as needed */
-    margin: 20px 0;
-  }
-  
-  #sideBar input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 40px;
-    background-color: #125688;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  #sideBar input[type="submit"]:hover {
-    background-color: #0d456c;
-  }
-  
-  #displayArea {
-    border-radius: 10px;
-    position: relative;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 20px;
-    min-height: 75%; 
-    left: 8%;
-    width: 80%;
-    right: 10%;
-  }
+#accTop {
+  text-align: center;
+}
 
-  /* #displayArea {
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-height: 75%;
-    padding: 20px;
-    margin: 20px;
-    left: 8%;
-    width: 80%;
-    right: 10%;
-  } */
-  
-  
-  #displayPosts, #displayComments {
-    margin-top: 20px;
-    color: #125688;
-  }
+#sideBar {
+  border-radius: 10px;
+  left: 1%;
+  min-height: 85%; /* Adjust as needed */
+  position: fixed;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  padding-bottom: 40px;
+  width: 200px; /* Adjust as needed */
+  margin: 20px 0;
+}
 
-  #homeButton {
-    top: 2px;
-    left: 2px;
-    padding: 10px;
-    background-color: #125688;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  #homeButton:hover {
-    background-color: #0d456c;
+#sideBar input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 40px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  }
-  /* Additional styles for other elements as needed */
-  .post {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 15px;
-    max-width: 600px; /* Adjust as needed */
-    margin: 20px auto;
-  }
-  
-  .post img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-  
-  .post p, .post div {
-    margin-top: 10px;
-    color: #333; /* Dark gray text */
-    font-family: "Arial", sans-serif;
-  }
-  
-  /* If you have like, comment buttons or other interactive elements */
-  .post .interactive-buttons {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 10px;
-  }
-  
-  .post .interactive-buttons button {
-    background-color: #125688;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  
-  .post .interactive-buttons button:hover {
-    background-color: #0d456c;
-  }
-  
-  .post {
-    /* Existing styles */
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .post-image {
-    /* Styles for the image container if needed */
-  
-  }
-  
-  .post-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  hr {
-    border: 0;
-    height: 1px;
-    background-color: #ddd; /* Or any color that fits your design */
-    margin: 10px 0;
-  }
-  
-  #likeButton {
-    /* Existing styles */
-    margin-left: auto; /* Pushes the button to the right */
-  }
-  
-  .styled-button {
-    padding: 10px;
-    background-color: #125688;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .styled-button:hover {
-    background-color: #0d456c;
-  }
-  
+#sideBar input[type="submit"]:hover {
+  background-color: #0d456c;
+}
+
+#displayArea {
+  border-radius: 10px;
+  position: relative;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  min-height: 75%;
+  left: 8%;
+  width: 80%;
+  right: 10%;
+}
+
+#displayPosts,
+#displayComments {
+  margin-top: 20px;
+  color: #125688;
+}
+
+#homeButton {
+  top: 2px;
+  left: 2px;
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#homeButton:hover {
+  background-color: #0d456c;
+}
+
+.post {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.post img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.post p,
+.post div {
+  margin-top: 10px;
+  color: #333;
+  font-family: "Arial", sans-serif;
+}
+
+.post .interactive-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.post .interactive-buttons button {
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.post .interactive-buttons button:hover {
+  background-color: #0d456c;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-image {
+  /* Styles for the image container if needed */
+}
+
+.post-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #ddd;
+  margin: 10px 0;
+}
+
+#likeButton {
+  margin-left: auto;
+}
+
+.styled-button {
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.styled-button:hover {
+  background-color: #0d456c;
+}
+
+#accTop {
+  display: flex;
+  align-items: center;
+}
+
+#displayName {
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+#followButton {
+  margin-left: 10px;
+  padding: 10px;
+  background-color: #125688;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

@@ -289,14 +289,14 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     });
 
     newPost.save();
-    console.log('CHECKPOINT ALPHA');
+    console.log("CHECKPOINT ALPHA");
 
     User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
-      console.log('CHECKPOINT BRAVO');
+      console.log("CHECKPOINT BRAVO");
       p.then((result) => {
-        console.log('CHECKPOINT CHARLIE');
+        console.log("CHECKPOINT CHARLIE");
         res.redirect("/feed.html");
       });
     });
@@ -314,7 +314,7 @@ app.get("/search/users/:KEYWORD", (req, res) => {
   var keyword = req.params.KEYWORD;
 
   const users = User.find({
-    username: { $regex: keyword, $options: 'i' }, // Using regex for substring search, 'i' for case-insensitive search
+    username: { $regex: keyword, $options: "i" }, // Using regex for substring search, 'i' for case-insensitive search
   }).exec();
 
   users
@@ -323,4 +323,106 @@ app.get("/search/users/:KEYWORD", (req, res) => {
       console.error("Error:", error);
       res.status(500).json({ error: "Internal server error" });
     });
+});
+
+app.get("/check-follow/:username/:accUsername", async (req, res) => {
+  try {
+    const { username, accUsername } = req.params;
+
+    // Find the user and the user they want to check
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
+
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user is following accUser
+    const isFollowing = user.following.includes(accUser._id);
+
+    res.json(isFollowing);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(false); // Return false in case of an error
+  }
+});
+
+app.post("/follow/:username/:accUsername", async (req, res) => {
+  try {
+    const accUsername = req.params.accUsername;
+    const username = req.params.username;
+
+    // Find the user and the user they want to follow
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
+
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user is not already following the other user
+    if (!user.following.includes(accUser._id)) {
+      // If not, follow the user
+      user.following.push(accUser._id);
+      accUser.followers.push(user._id);
+
+      // Use findOneAndUpdate with the document's current version
+      await User.findOneAndUpdate(
+        { _id: user._id, __v: user.__v },
+        { following: user.following },
+        { new: true, lean: true }
+      );
+
+      await User.findOneAndUpdate(
+        { _id: accUser._id, __v: accUser.__v },
+        { followers: accUser.followers },
+        { new: true, lean: true }
+      );
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/unfollow/:username/:accUsername", async (req, res) => {
+  try {
+    const accUsername = req.params.accUsername;
+    const username = req.params.username;
+
+    // Find the user and the user they want to unfollow
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
+
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user is following the other user
+    if (user.following.includes(accUser._id)) {
+      // If yes, unfollow the user
+      user.following = user.following.filter((id) => id.toString() !== accUser._id.toString());
+      accUser.followers = accUser.followers.filter((id) => id.toString() !== user._id.toString());
+
+      // Use findOneAndUpdate with the document's current version
+      await User.findOneAndUpdate(
+        { _id: user._id, __v: user.__v },
+        { following: user.following },
+        { new: true, lean: true }
+      );
+
+      await User.findOneAndUpdate(
+        { _id: accUser._id, __v: accUser.__v },
+        { followers: accUser.followers },
+        { new: true, lean: true }
+      );
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
