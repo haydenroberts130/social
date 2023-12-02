@@ -277,7 +277,7 @@ function likePost(postId) {
 }
 
 
-function showListings() {
+function showPosts() {
   const urlParams = new URLSearchParams(window.location.search);
   const username = urlParams.get("username");
 
@@ -316,6 +316,6 @@ function showListings() {
 document.addEventListener('DOMContentLoaded', function() {
   // Check if the current page is account.html
   if (window.location.pathname.endsWith('/account.html') || window.location.pathname.endsWith('account.html')) {
-      showListings();
+      showPosts();
   }
 });
