@@ -275,3 +275,47 @@ function likePost(postId) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+function showListings() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get("username");
+
+  var disp = document.getElementById('displayArea');
+
+
+  fetch('/get/posts/' + username)
+      .then((response) => response.json())
+      .then((posts) => {
+          disp.innerHTML = ''; // Clear previous posts
+
+          posts.forEach(post => {
+              const postElement = document.createElement('div');
+              postElement.className = 'post'; // Set class name
+
+              console.log(post.image);
+
+              // Creating the HTML structure based on your example
+              postElement.innerHTML = `
+                  <div>${post.user}</div>
+                  <div class="post-image">
+                      <img src="./${post.image}" alt="${post.caption}">
+                  </div>
+                  <hr>
+                  <div class="post-content">
+                      <span>${post.caption}</span>
+                      <input type="submit" value="<3" class="likeButton" class="styled-button">
+                  </div>
+              `;
+
+              disp.appendChild(postElement);
+          });
+      });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if the current page is account.html
+  if (window.location.pathname.endsWith('/account.html') || window.location.pathname.endsWith('account.html')) {
+      showListings();
+  }
+});

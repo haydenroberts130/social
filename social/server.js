@@ -297,22 +297,27 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
   if (req.file) {
     const imagePath = req.file.path; // The path where the image is saved
 
+    console.log("///////////////////////////////////");
+    console.log(imagePath);
+    console.log("///////////////////////////////////");
+
+
     // Create a new post
     const newPost = new Post({
       user: username,
-      imagePath: imagePath,
+      image: imagePath,
       caption: caption,
     });
 
     newPost.save();
-    console.log("CHECKPOINT ALPHA");
+    console.log('CHECKPOINT ALPHA');
 
     User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
-      console.log("CHECKPOINT BRAVO");
+      console.log('CHECKPOINT BRAVO');
       p.then((result) => {
-        console.log("CHECKPOINT CHARLIE");
+        console.log('CHECKPOINT CHARLIE');
         res.redirect("/feed.html");
       });
     });
@@ -320,6 +325,7 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     res.status(400).send("No image uploaded");
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
@@ -357,4 +363,50 @@ app.post('/likePost/:postId', async (req, res) => {
       console.error(error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
+});
+
+
+/**
+ * Should return a JSON array containing every listing (item)for the user
+ */
+
+app.get('/get/posts/:username', function (req, res) {
+  User.findOne({ username: req.params.username })
+    .select('posts')
+    .then(user => {
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+      return Promise.all(user.posts.map(postId => Post.findById(postId)));
+    })
+    .then(posts => {
+      res.json(posts);
+    })
+    .catch(error => {
+      res.status(500).send('Server error');
+    });
+});
+
+
+app.use('/uploads', express.static('./uploads'));
+
+/**
+ * Should return a JSON array containing every listing (item)for the user
+ */
+
+app.get('/get/posts/:username', function (req, res) {
+  User.findOne({ username: req.params.username })
+    .select('posts')
+    .then(user => {
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+      return Promise.all(user.posts.map(postId => Post.findById(postId)));
+    })
+    .then(posts => {
+      res.json(posts);
+    })
+    .catch(error => {
+      res.status(500).send('Server error');
+    });
 });
