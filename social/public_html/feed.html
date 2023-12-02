@@ -101,6 +101,7 @@
 
               for (const post of posts) {
                 const postDiv = document.createElement("div");
+                // console.log("Post = " + post);
                 postDiv.classList.add("post");
 
                 const postUsernameDiv = document.createElement("div");
@@ -129,7 +130,6 @@
                 likeButton.classList.add("styled-button");
                 likeButton.textContent = "❤";
                 likeButton.addEventListener("click", function () {
-                  console.log("POST ID = " + post._id);
                   likePost(post._id);
                 });
 

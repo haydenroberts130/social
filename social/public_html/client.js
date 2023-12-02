@@ -307,7 +307,7 @@ async function showPosts() {
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post'; 
-          postElement._id = `post_${post._id}`;
+          postElement.id = `post_${post._id}`;
 
           let deleteButtonHTML = ''; // Initialize deleteButtonHTML for each post
           if (loggedInUsername === post.user) {
@@ -326,7 +326,6 @@ async function showPosts() {
                   ${deleteButtonHTML}
               </div>
           `;
-
           disp.appendChild(postElement);
         });
       }
