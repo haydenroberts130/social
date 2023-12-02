@@ -355,6 +355,9 @@ app.post('/likePost/:postId', async (req, res) => {
       const postId = req.params.postId;
       const post = await Post.findById(postId);
       if (post) {
+        if(!post.likes) {
+          post.likes = 0;
+        }
           post.likes += 1;
           await post.save();
           res.json({ success: true, newLikeCount: post.likes });
@@ -368,26 +371,7 @@ app.post('/likePost/:postId', async (req, res) => {
 });
 
 
-/**
- * Should return a JSON array containing every listing (item)for the user
- */
 
-app.get('/get/posts/:username', function (req, res) {
-  User.findOne({ username: req.params.username })
-    .select('posts')
-    .then(user => {
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-      return Promise.all(user.posts.map(postId => Post.findById(postId)));
-    })
-    .then(posts => {
-      res.json(posts);
-    })
-    .catch(error => {
-      res.status(500).send('Server error');
-    });
-});
 
 
 app.use('/uploads', express.static('./uploads'));

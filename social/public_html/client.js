@@ -307,11 +307,11 @@ async function showPosts() {
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post'; 
-          postElement.id = `post_${post.id}`;
+          postElement._id = `post_${post._id}`;
 
           let deleteButtonHTML = ''; // Initialize deleteButtonHTML for each post
           if (loggedInUsername === post.user) {
-            deleteButtonHTML = `<button onclick="deletePost('${post.id}')">Delete Post</button>`;
+            deleteButtonHTML = `<button onclick="deletePost('${post._id}')">Delete Post</button>`;
           }
 
           postElement.innerHTML = `
@@ -322,7 +322,7 @@ async function showPosts() {
               <hr>
               <div class="post-content">
                   <span>${post.caption}</span>
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post.id}')">❤</button>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')">❤</button>
                   ${deleteButtonHTML}
               </div>
           `;

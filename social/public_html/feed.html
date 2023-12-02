@@ -129,7 +129,8 @@
                 likeButton.classList.add("styled-button");
                 likeButton.textContent = "❤";
                 likeButton.addEventListener("click", function () {
-                  likePost(post.id);
+                  console.log("POST ID = " + post._id);
+                  likePost(post._id);
                 });
 
                 postContentDiv.appendChild(captionSpan);
