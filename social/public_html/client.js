@@ -312,10 +312,10 @@ async function showPosts() {
           let deleteButtonHTML = '';
         let editButtonHTML = '';
 
-        if (loggedInUsername === post.user) {
-            deleteButtonHTML = `<button onclick="deletePost('${post._id}')" class="styled-button">Delete Post</button>`;
-            editButtonHTML = `<button onclick="editCaption('${post._id}')" class="styled-button">Edit</button>`;
-        }
+          if (loggedInUsername === post.user) {
+            deleteButtonHTML = `<button style="font-size: 20px;" class="styled-button" onclick="deletePost('${post._id}')">Delete Post</button>`;
+            editButtonHTML = `<button id="edit_button_${post._id}" onclick="editCaption('${post._id}')" class="styled-button" style="font-size: 20px;">Edit</button>`;
+          }
 
           postElement.innerHTML = `
               <div>${post.user}</div>
@@ -357,22 +357,25 @@ function deletePost(postId) {
 
 // TEST TEST TEST
 function editCaption(postId) {
-    const captionDiv = document.getElementById(`caption_${postId}`);
-    const editCaptionInput = document.getElementById(`edit_caption_${postId}`);
-    const isEditing = editCaptionInput.style.display === 'none';
+  const captionDiv = document.getElementById(`caption_${postId}`);
+  const editCaptionInput = document.getElementById(`edit_caption_${postId}`);
+  const editButton = document.querySelector(`#edit_button_${postId}`);
+  const isEditing = editCaptionInput.style.display === 'none';
 
-    if (isEditing) {
-        // Switch to edit mode
-        captionDiv.style.display = 'none';
-        editCaptionInput.style.display = 'block';
-    } else {
-        // Confirm the edit
-        const updatedCaption = editCaptionInput.value;
-        captionDiv.textContent = updatedCaption;
-        captionDiv.style.display = 'block';
-        editCaptionInput.style.display = 'none';
+  if (isEditing) {
+      // Switch to edit mode
+      captionDiv.style.display = 'none';
+      editCaptionInput.style.display = 'block';
+      editButton.textContent = 'Save'; // Change button text to "Save"
+  } else {
+      // Confirm the edit
+      const updatedCaption = editCaptionInput.value;
+      captionDiv.textContent = updatedCaption;
+      captionDiv.style.display = 'block';
+      editCaptionInput.style.display = 'none';
+      editButton.textContent = 'Edit'; // Change button text back to "Edit"
 
-        fetch(`/update/post/${postId}`, {
+      fetch(`/update/post/${postId}`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -388,7 +391,7 @@ function editCaption(postId) {
           }
       })
       .catch(error => console.error('Error:', error));
-    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
