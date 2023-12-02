@@ -265,13 +265,13 @@ async function addPost() {
 }
 
 function likePost(postId) {
-  fetch(`/likePost/${postId}`, { method: "POST" })
+  fetch(`/likePost/${postId}?timestamp=${new Date().getTime()}`, { method: "POST" })
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        // Update the like count on the page
-        document.getElementById(`like_count_${postId}`).innerText =
-          data.newLikeCount;
+        // Update the like count on the button
+        const likeCountSpan = document.getElementById(`like_count_${postId}`);
+        likeCountSpan.textContent = data.newLikeCount;
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -322,7 +322,7 @@ async function showPosts() {
               <hr>
               <div class="post-content">
                   <span>${post.caption}</span>
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')">❤</button>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')">❤ <span id="like_count_${post._id}">${post.likes != null ? post.likes : 0}</span></button>
                   ${deleteButtonHTML}
               </div>
           `;
