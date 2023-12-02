@@ -120,12 +120,15 @@
                 const captionSpan = document.createElement("span");
                 captionSpan.textContent = post.caption;
 
-                const likeButton = document.createElement("input");
-                likeButton.type = "submit";
-                likeButton.value = "<3 0";
-                likeButton.id = "likeButton";
+                const likeButton = document.createElement("button");
+
+                // Set button attributes
+                likeButton.style.fontSize = "20px";
                 likeButton.classList.add("styled-button");
-                likeButton.addEventListener("click", likePost);
+                likeButton.textContent = "❤";
+                likeButton.addEventListener("click", function () {
+                  likePost("1234");
+                });
 
                 postContentDiv.appendChild(captionSpan);
                 postContentDiv.appendChild(likeButton);

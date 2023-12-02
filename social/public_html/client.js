@@ -304,7 +304,7 @@ function showPosts() {
                   <hr>
                   <div class="post-content">
                       <span>${post.caption}</span>
-                      <input type="submit" value="<3" class="likeButton" class="styled-button">
+                      <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
                   </div>
               `;
 
