@@ -322,7 +322,7 @@ async function showPosts() {
               <hr>
               <div class="post-content">
                   <span>${post.caption}</span>
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')">❤ <span id="like_count_${post._id}">${post.likes != null ? post.likes : 0}</span></button>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
                   ${deleteButtonHTML}
               </div>
           `;
@@ -334,16 +334,21 @@ async function showPosts() {
 
 // DELETE POST
 function deletePost(postId) {
-  fetch(`/delete/post/${postId}`, { method: 'DELETE' })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Remove the post client side
-            document.getElementById(`post_${postId}`).remove();
-        }
-    })
-    .catch(error => console.error('Error:', error));
+  // Prompt the user for confirmation
+  const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+  if (confirmDelete) {
+    fetch(`/delete/post/${postId}`, { method: 'DELETE' })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              // Remove the post client side
+              document.getElementById(`post_${postId}`).remove();
+          }
+      })
+      .catch(error => console.error('Error:', error));
+  }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
