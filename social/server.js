@@ -250,7 +250,9 @@ app.get("/get/getPostsFromUser", (req, res) => {
           image: post.image,
           caption: post.caption,
           comments: post.comments,
-          date: post.createdAt
+          date: post.createdAt,
+          _id: post._id,
+          likes: post.likes
         }));
         res.json(posts);
       } else {

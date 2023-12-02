@@ -271,7 +271,7 @@ function likePost(postId) {
       if (data.success) {
         // Update the like count on the button
         const likeCountSpan = document.getElementById(`like_count_${postId}`);
-        likeCountSpan.textContent = data.newLikeCount;
+        likeCountSpan.textContent = "❤ " + data.newLikeCount;
       }
     })
     .catch((error) => console.error("Error:", error));

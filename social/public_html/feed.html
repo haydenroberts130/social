@@ -100,6 +100,7 @@
               const posts = await responsePosts.json();
 
               for (const post of posts) {
+                console.log("POST: " + JSON.stringify(post));
                 const postDiv = document.createElement("div");
                 // console.log("Post = " + post);
                 postDiv.classList.add("post");
@@ -126,9 +127,10 @@
                 const likeButton = document.createElement("button");
 
                 // Set button attributes
+                likeButton.id = `like_count_${post._id}`;
                 likeButton.style.fontSize = "20px";
                 likeButton.classList.add("styled-button");
-                likeButton.textContent = "❤";
+                likeButton.textContent = "❤ " + post.likes;
                 likeButton.addEventListener("click", function () {
                   likePost(post._id);
                 });
