@@ -311,7 +311,7 @@ function showPosts() {
               <hr>
               <div class="post-content">
                   <span>${post.caption}</span>
-                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post.id}')">❤</button>
               </div>
           `;
 
