@@ -276,46 +276,54 @@ function likePost(postId) {
     .catch(error => console.error('Error:', error));
 }
 
-
 function showPosts() {
   const urlParams = new URLSearchParams(window.location.search);
   const username = urlParams.get("username");
 
   var disp = document.getElementById('displayArea');
 
-
   fetch('/get/posts/' + username)
-      .then((response) => response.json())
-      .then((posts) => {
-          disp.innerHTML = ''; // Clear previous posts
+    .then((response) => response.json())
+    .then((posts) => {
+      disp.innerHTML = ''; // Clear previous posts
 
-          posts.forEach(post => {
-              const postElement = document.createElement('div');
-              postElement.className = 'post'; // Set class name
+      if (posts.length === 0) {
+        // If there are no posts, display a message
+        const noPostsMessage = document.createElement('h1');
+        noPostsMessage.textContent = "Upload posts to see them here!";
+        noPostsMessage.style.color = "#808080";
+        noPostsMessage.style.textAlign = "center";
+        disp.appendChild(noPostsMessage);
+      } else {
+        // Display posts if there are any
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'post'; // Set class name
 
-              console.log(post.image);
+          console.log(post.image);
 
-              // Creating the HTML structure based on your example
-              postElement.innerHTML = `
-                  <div>${post.user}</div>
-                  <div class="post-image">
-                      <img src="./${post.image}" alt="${post.caption}">
-                  </div>
-                  <hr>
-                  <div class="post-content">
-                      <span>${post.caption}</span>
-                      <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
-                  </div>
-              `;
+          // Creating the HTML structure based on your example
+          postElement.innerHTML = `
+              <div>${post.user}</div>
+              <div class="post-image">
+                  <img src="./${post.image}" alt="${post.caption}">
+              </div>
+              <hr>
+              <div class="post-content">
+                  <span>${post.caption}</span>
+                  <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
+              </div>
+          `;
 
-              disp.appendChild(postElement);
-          });
-      });
+          disp.appendChild(postElement);
+        });
+      }
+    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Check if the current page is account.html
   if (window.location.pathname.endsWith('/account.html') || window.location.pathname.endsWith('account.html')) {
-      showPosts();
+    showPosts();
   }
 });
