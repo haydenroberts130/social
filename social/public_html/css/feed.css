@@ -174,3 +174,36 @@ hr {
   margin-left: auto; /* Pushes the button to the right */
 }
 
+.list {
+  text-align: center;
+}
+
+/* Style the listUsers container */
+.listUsers {
+  text-align: center;
+  font-family: "Arial", sans-serif; /* Set a nicer font */
+  font-size: 20px;
+  padding: 20px;
+}
+
+/* Style the anchor tags representing each user */
+.listUsers a {
+  display: block; /* Show each user on a new line */
+  text-decoration: none; /* Remove underline from links */
+  color: #333; /* Set text color */
+}
+
+/* Style the anchor tags on hover */
+.listUsers a:hover {
+  color: blue; /* Change color on hover */
+  /* Add more hover styles as needed */
+}
+
+.username {
+  color: black;
+
+}
+
+.username:hover {
+  color: #f7319e; /* Change to your desired hover color */
+}

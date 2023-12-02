@@ -28,7 +28,7 @@
           .then((username) => {
             document.getElementById(
               "displayName"
-            ).innerText = `${username}'s feed`;
+            ).innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${username}</a>'s feed`;
           })
           .catch((error) => {
             console.error("Error:", error.message);
@@ -43,32 +43,32 @@
           onclick="searchAccounts"
         />
       </div>
-      <input
-        type="submit"
-        value="+"
-        id="postButton"
-        class="styled-button"
-        onclick="goToPost()"
-      />
-      <input
-        type="submit"
-        value="Logout"
-        id="logoutButton"
-        class="styled-button"
-        onclick="logout()"
+      <div id="rightSideBar">
+        <input
+          type="submit"
+          value="+"
+          id="postButton"
+          class="styled-button"
+          onclick="goToPost()"
         />
-      <input
-        type="submit"
-        value="Help"
-        id="helpButton"
-        class="styled-button"
-        onclick="goToHelp()"
-      />
+        <input
+          type="submit"
+          value="Logout"
+          id="logoutButton"
+          class="styled-button"
+          onclick="logout()"
+        />
+        <input
+          type="submit"
+          value="Help"
+          id="helpButton"
+          class="styled-button"
+          onclick="goToHelp()"
+        />
+      </div>
     </div>
     <div id="displayArea"></div>
     <script>
-
-        
       document.addEventListener("DOMContentLoaded", async function () {
         const feedContainer = document.getElementById("displayArea");
 
@@ -125,7 +125,7 @@
                 likeButton.value = "<3 0";
                 likeButton.id = "likeButton";
                 likeButton.classList.add("styled-button");
-                likeButton.addEventListener('click', likePost);
+                likeButton.addEventListener("click", likePost);
 
                 postContentDiv.appendChild(captionSpan);
                 postContentDiv.appendChild(likeButton);
