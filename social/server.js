@@ -423,3 +423,39 @@ app.delete('/delete/post/:postId', async (req, res) => {
       res.status(500).json({ success: false, message: 'Server Error' });
   }
 });
+
+
+////////////////////////////////////////////////////
+// COMMENT STUFF
+////////////////////////////////////////////////////
+
+app.post("/upload/comment", async (req, res) => {
+  const user = req.body.user;
+  const text = req.body.text; // Assuming username is sent along with the form
+  const ID = req.body.post;
+
+  if (req.file) {
+
+
+
+    // Create a new post
+    const newComment = new Comment({
+      user: user,
+      text: text,
+      likes: 0,
+    });
+
+    newComment.save();
+    // console.log('CHECKPOINT ALPHA');
+
+    Post.findOne({ _id: ID }).then((post) => {
+      post.comments.push(newComment._id);
+      let p = post.save();
+      // console.log('CHECKPOINT BRAVO');
+      p.then((result) => {
+        // console.log('CHECKPOINT CHARLIE');
+        // res.redirect("/feed.html");
+      });
+    });
+  }
+});
