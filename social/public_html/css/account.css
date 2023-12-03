@@ -26,15 +26,24 @@ body {
 
 #header {
   display: flex;
+  /* flex-grow: 2; */
   justify-content: space-between;
   align-items: center;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 30%;
+  max-width: 80%;
+  min-width: 30%;
   border-radius: 10px;
   position: relative;
   margin: 20px auto 20px auto;
+  /* left: -.5%;
+  right: 10%; */
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%; /* This should be the same as #displayArea */
+  left: 0; /* Reset this property */
+  right: 0; /* Reset this property */
 }
 
 
@@ -89,14 +98,19 @@ body {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-left: 20px;
-  margin-right: 20px;
+  /* margin-left: 20px;
+  margin-right: 20px; */
   margin-bottom: 20px;
   margin-top: 25px;
   min-height: 75%;
-  left: 8%;
+  /* left: 8%; */
   width: 80%;
-  right: 10%;
+  /* right: 10%; */
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%; /* This should be the same as #header */
+  left: 0; /* Reset this property */
+  right: 0; /* Reset this property */
 }
 
 #displayPosts,
@@ -284,4 +298,8 @@ hr {
 
 .comment-like-button{
   margin-left: auto;
+}
+
+#buttonBar {
+  display: flex;
 }

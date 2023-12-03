@@ -27,6 +27,11 @@ body {
   gap: 10px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%; /* This should be the same as #displayArea */
+  left: 0; /* Reset this property */
+  right: 0; /* Reset this property */
 }
 
 .empty-feed-message {
@@ -70,6 +75,11 @@ body {
   position: relative;
   width: 85%;
   min-height: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%; /* This should be the same as #header */
+  left: 0; /* Reset this property */
+  right: 0; /* Reset this property */
 }
 
 #displayPosts, #displayComments {
