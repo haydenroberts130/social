@@ -252,7 +252,7 @@ app.get("/get/getPostsFromUser", (req, res) => {
           comments: post.comments,
           date: post.createdAt,
           _id: post._id,
-          likes: post.likes
+          likes: post.likes,
         }));
         res.json(posts);
       } else {
@@ -305,7 +305,6 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     console.log(imagePath);
     console.log("///////////////////////////////////");
 
-
     // Create a new post
     const newPost = new Post({
       user: username,
@@ -314,14 +313,14 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     });
 
     newPost.save();
-    console.log('CHECKPOINT ALPHA');
+    console.log("CHECKPOINT ALPHA");
 
     User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
-      console.log('CHECKPOINT BRAVO');
+      console.log("CHECKPOINT BRAVO");
       p.then((result) => {
-        console.log('CHECKPOINT CHARLIE');
+        console.log("CHECKPOINT CHARLIE");
         res.redirect("/feed.html");
       });
     });
@@ -329,7 +328,6 @@ app.post("/upload/post", upload.single("photo"), async (req, res) => {
     res.status(400).send("No image uploaded");
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
@@ -351,98 +349,239 @@ app.get("/search/users/:KEYWORD", (req, res) => {
     });
 });
 
-//Like
-app.post('/likePost/:postId', async (req, res) => {
+app.get("/check-follow/:username/:accUsername", async (req, res) => {
   try {
-      const postId = req.params.postId;
-      const post = await Post.findById(postId);
-      if (post) {
-        if(!post.likes) {
-          post.likes = 0;
-        }
-          post.likes += 1;
-          await post.save();
-          res.json({ success: true, newLikeCount: post.likes });
-      } else {
-          res.status(404).json({ success: false, message: 'Post not found' });
-      }
+    const { username, accUsername } = req.params;
+
+    // Find the user and the user they want to check
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
+
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user is following accUser
+    const isFollowing = user.following.includes(accUser._id);
+
+    res.json(isFollowing);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json(false); // Return false in case of an error
   }
 });
 
+app.post("/follow/:username/:accUsername", async (req, res) => {
+  try {
+    const accUsername = req.params.accUsername;
+    const username = req.params.username;
 
+    // Find the user and the user they want to follow
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
 
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
+    // Check if the user is not already following the other user
+    if (!user.following.includes(accUser._id)) {
+      // If not, follow the user
+      user.following.push(accUser._id);
+      accUser.followers.push(user._id);
 
-app.use('/uploads', express.static('./uploads'));
+      // Use findOneAndUpdate with the document's current version
+      await User.findOneAndUpdate(
+        { _id: user._id, __v: user.__v },
+        { following: user.following },
+        { new: true, lean: true }
+      );
+
+      await User.findOneAndUpdate(
+        { _id: accUser._id, __v: accUser.__v },
+        { followers: accUser.followers },
+        { new: true, lean: true }
+      );
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/unfollow/:username/:accUsername", async (req, res) => {
+  try {
+    const accUsername = req.params.accUsername;
+    const username = req.params.username;
+
+    // Find the user and the user they want to unfollow
+    const user = await User.findOne({ username });
+    const accUser = await User.findOne({ username: accUsername });
+
+    if (!user || !accUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the user is following the other user
+    if (user.following.includes(accUser._id)) {
+      // If yes, unfollow the user
+      user.following = user.following.filter(
+        (id) => id.toString() !== accUser._id.toString()
+      );
+      accUser.followers = accUser.followers.filter(
+        (id) => id.toString() !== user._id.toString()
+      );
+
+      // Use findOneAndUpdate with the document's current version
+      await User.findOneAndUpdate(
+        { _id: user._id, __v: user.__v },
+        { following: user.following },
+        { new: true, lean: true }
+      );
+
+      await User.findOneAndUpdate(
+        { _id: accUser._id, __v: accUser.__v },
+        { followers: accUser.followers },
+        { new: true, lean: true }
+      );
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+//Like
+app.post("/likePost/:postId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (post) {
+      if (!post.likes) {
+        post.likes = 0;
+      }
+      post.likes += 1;
+      await post.save();
+      res.json({ success: true, newLikeCount: post.likes });
+    } else {
+      res.status(404).json({ success: false, message: "Post not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+app.use("/uploads", express.static("./uploads"));
 
 /**
  * Should return a JSON array containing every listing (item)for the user
  */
 
-app.get('/get/posts/:username', function (req, res) {
+app.get("/get/posts/:username", function (req, res) {
   User.findOne({ username: req.params.username })
-    .select('posts')
-    .then(user => {
+    .select("posts")
+    .then((user) => {
       if (!user) {
-        return res.status(404).send('User not found');
+        return res.status(404).send("User not found");
       }
-      return Promise.all(user.posts.map(postId => Post.findById(postId)));
+      return Promise.all(user.posts.map((postId) => Post.findById(postId)));
     })
-    .then(posts => {
+    .then((posts) => {
       res.json(posts);
     })
-    .catch(error => {
-      res.status(500).send('Server error');
+    .catch((error) => {
+      res.status(500).send("Server error");
     });
 });
 
 // DELETE
-app.delete('/delete/post/:postId', async (req, res) => {
+app.delete("/delete/post/:postId", async (req, res) => {
   const postId = req.params.postId;
 
   try {
-      const post = await Post.findById(postId);
+    const post = await Post.findById(postId);
 
-      if (!post) {
-          return res.status(404).json({ success: false, message: 'Post not found' });
-      }
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
 
-      await Post.deleteOne({ _id: postId });
+    await Post.deleteOne({ _id: postId });
 
-      await User.updateOne(
-          { posts: postId },
-          { $pull: { posts: postId } }
-      );
+    await User.updateOne({ posts: postId }, { $pull: { posts: postId } });
 
-      res.json({ success: true, message: 'Post deleted successfully' });
+    res.json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
 //EDIT EDIT EDIT
 
-app.post('/update/post/:postId', async (req, res) => {
+app.post("/update/post/:postId", async (req, res) => {
   const postId = req.params.postId;
   const { caption } = req.body;
 
   try {
-      const post = await Post.findById(postId);
+    const post = await Post.findById(postId);
 
-      if (!post) {
-          return res.status(404).json({ success: false, message: 'Post not found' });
-      }
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
 
-      post.caption = caption;
-      await post.save();
+    post.caption = caption;
+    await post.save();
 
-      res.json({ success: true, message: 'Caption updated successfully' });
+    res.json({ success: true, message: "Caption updated successfully" });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+app.post("/upload/comment", async (req, res) => {
+  const { post, text, user } = req.body;
+  console.log("CHECKPOINT WHISKEY");
+  try {
+    // Create and save the new comment
+    let newComment = new Comment({
+      user: user,
+      text: text,
+      post: post,
+    });
+    await newComment.save();
+    console.log("CHECKPOINT AFTER newComment");
+    let postToUpdate = await Post.findOne({ _id: post });
+    if (!postToUpdate) {
+      console.log("Post not found for ID:", post);
+      return res.status(404).send("Post not found");
+    }
+    postToUpdate.comments.push(newComment._id);
+    await postToUpdate.save();
+    console.log("CHECKPOINT NOVEMBER");
+    res.status(201).json({ success: true, message: "Comment created", comment: newComment });
+  } catch (error) {
+    console.error("Error in /upload/comment:", error);
+    res.status(500).send("DATABASE SAVE ISSUE");
+  }
+});
+
+app.get('/get/comments/:postId', async (req, res) => {
+  try {
+      const postId = req.params.postId;
+      const comments = await Comment.find({ post: postId });
+
+      res.json(comments);
+  } catch (error) {
+      console.error("Error fetching comments:", error);
+      res.status(500).json({ error: "Internal Server Error" });
   }
 });

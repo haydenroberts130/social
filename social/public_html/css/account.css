@@ -261,6 +261,12 @@ hr {
   align-items: center;
 }
 
+.comment-section{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .username {
   color: black;
 

@@ -284,59 +284,85 @@ async function getCurrentUsername() {
   return username;
 }
 
+// Function to show posts with comments
 async function showPosts() {
   const urlParams = new URLSearchParams(window.location.search);
   const username = urlParams.get("username");
-  const loggedInUsername = await getCurrentUsername(); 
+  const loggedInUsername = await getCurrentUsername();
   var disp = document.getElementById('displayArea');
 
   fetch('/get/posts/' + username)
-    .then((response) => response.json())
-    .then((posts) => {
-      disp.innerHTML = ''; // Clear previous posts
+      .then((response) => response.json())
+      .then(async (posts) => {
+          disp.innerHTML = ''; // Clear previous posts
 
-      if (posts.length === 0) {
-        // If there are no posts, display a message
-        const noPostsMessage = document.createElement('h1');
-        noPostsMessage.textContent = "Upload posts to see them here!";
-        noPostsMessage.style.color = "#808080";
-        noPostsMessage.style.textAlign = "center";
-        disp.appendChild(noPostsMessage);
-      } else {
-        // Display posts if there are any
-        posts.forEach(post => {
-          const postElement = document.createElement('div');
-          postElement.className = 'post'; 
-          postElement.id = `post_${post._id}`;
+          if (posts.length === 0) {
+              // If there are no posts, display a message
+              const noPostsMessage = document.createElement('h1');
+              noPostsMessage.textContent = "Upload posts to see them here!";
+              noPostsMessage.style.color = "#808080";
+              noPostsMessage.style.textAlign = "center";
+              disp.appendChild(noPostsMessage);
+          } else {
+              // Display posts if there are any
+              for (const post of posts) {
+                  const postElement = document.createElement('div');
+                  postElement.className = 'post';
+                  postElement.id = `post_${post._id}`;
 
-          let deleteButtonHTML = '';
-        let editButtonHTML = '';
+                  let deleteButtonHTML = '';
+                  let editButtonHTML = '';
 
-          if (loggedInUsername === post.user) {
-            deleteButtonHTML = `<button style="font-size: 20px;" class="styled-button" onclick="deletePost('${post._id}')">Delete Post</button>`;
-            editButtonHTML = `<button id="edit_button_${post._id}" onclick="editCaption('${post._id}')" class="styled-button" style="font-size: 20px;">Edit</button>`;
+                  if (loggedInUsername === post.user) {
+                      deleteButtonHTML = `<button style="font-size: 20px;" class="styled-button" onclick="deletePost('${post._id}')">Delete Post</button>`;
+                      editButtonHTML = `<button id="edit_button_${post._id}" onclick="editCaption('${post._id}')" class="styled-button" style="font-size: 20px;">Edit</button>`;
+                  }
+
+                  postElement.innerHTML = `
+                      <span><span style="color: gray";>@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${post.user}</a></span>
+                      <div class="post-image">
+                          <img src="./${post.image}" alt="${post.caption}">
+                      </div>
+                      <hr>
+                      <div class="post-box">
+                          <div id="caption_${post._id}" class="post-caption">${post.caption}</div>
+                          <div class="post-content">
+                              <input type="text" id="edit_caption_${post._id}" class="edit-caption-input" style="display:none;" value="${post.caption}">
+                              ${editButtonHTML}
+                              <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
+                              ${deleteButtonHTML}
+                          </div>
+                      </div>
+                      <hr>
+                      <div class="comment-section">
+                          <button style="font-size: 20px;" class="styled-button comment-toggle-button" onclick="toggleCommentInput('${post._id}')">Comment</button>
+                          <textarea class="comment-input" id="comment_${post._id}" placeholder="Add a comment..." style="display: none;"></textarea>
+                          <button style="font-size: 20px; display: none;" class="styled-button" onclick="commentCreate('${post._id}')">Add Comment</button>
+                      </div>
+                      <div id="postComments_${post._id}"></div>
+                  `;
+
+                  // Fetch comments for the post and update the postComments div
+                  const commentsContainer = postElement.querySelector(`#postComments_${post._id}`);
+                  await fetch(`/get/comments/${post._id}`)
+                      .then((response) => response.json())
+                      .then((comments) => {
+                          comments.forEach((comment) => {
+                              const commentElement = document.createElement("div");
+                              commentElement.innerHTML = `
+                              <span><span style="color: gray";>@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a></span>
+                              <span>: ${comment.text}</span>`;
+                              commentsContainer.appendChild(commentElement);
+                          });
+                      })
+                      .catch((error) => {
+                          console.error("Error fetching comments:", error);
+                      });
+
+                  disp.appendChild(postElement);
+              }
           }
-
-          postElement.innerHTML = `
-            <span><span style="color: gray";>@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${post.user}</a></span>
-            <div class="post-image">
-              <img src="./${post.image}" alt="${post.caption}">
-            </div>
-            <hr>
-            <div class="post-box">
-            <div id="caption_${post._id}" class="post-caption">${post.caption}</div>
-            <div class="post-content">
-              <input type="text" id="edit_caption_${post._id}" class="edit-caption-input" style="display:none;" value="${post.caption}">
-              ${editButtonHTML}
-              <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
-              ${deleteButtonHTML}
-            </div>
-            </div>
-          `;
-          disp.appendChild(postElement);
-        });
-      }
-    });
+      });
 }
 
 // DELETE POST
@@ -404,3 +430,51 @@ document.addEventListener('DOMContentLoaded', function () {
     showPosts();
   }
 });
+
+
+function toggleCommentInput(postId) {
+  var commentInput = document.getElementById('comment_' + postId);
+  var addButton = document.querySelector('.comment-section button');
+  var addCommentButton = document.querySelector('.comment-section button:last-child');
+
+  if (commentInput.style.display === 'none') {
+      // Show textarea and "Add Comment" button, hide "Comment" button
+      commentInput.style.display = 'block';
+      addButton.style.display = 'none';
+      addCommentButton.style.display = 'inline-block';
+  } else {
+      // Hide textarea and "Add Comment" button, show "Comment" button
+      commentInput.style.display = 'none';
+      addButton.style.display = 'inline-block';
+      addCommentButton.style.display = 'none';
+  }
+}
+
+async function commentCreate(postId) {
+  console.log(postId);
+  const text = document.getElementById('comment_' + postId).value;
+  const user = await getCurrentUsername();
+
+  fetch('/upload/comment', {
+      method: 'POST',
+      body: JSON.stringify({ 'post': postId, 'text': text, 'user': user }),
+      headers: { 'Content-Type': 'application/json' }
+  }).then((response) => response.json())
+      .then((result) => {
+          const commentsContainer = document.getElementById(`postComments_${postId}`);
+          
+          console.log("REACHED ADDING COMMENTS!!!!")
+
+          const commentElement = document.createElement("div");
+          commentElement.innerHTML = `
+          <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
+          <span>: ${result.comment.text}</span>`;
+          commentsContainer.appendChild(commentElement);
+
+          // Clear the textarea
+          document.getElementById('comment_' + postId).value = '';
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+      });
+}
