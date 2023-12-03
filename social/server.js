@@ -1,3 +1,8 @@
+/**
+ * Hayden Roberts, Max Tung, Ethan Wong, Angelina Altunyan
+ * This file acts as the server for the website.
+ */
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const express = require("express");

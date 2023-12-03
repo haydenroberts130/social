@@ -1,5 +1,5 @@
 /**
- * Hayden Roberts
+ * Hayden Roberts, Max Tung, Ethan Wong, Angelina Altunyan
  * This file acts as the client side code that interacts with the server.
  */
 
