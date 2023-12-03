@@ -265,6 +265,21 @@ function likePost(postId) {
     })
     .catch((error) => console.error("Error:", error));
 }
+/////////////////////////////////
+// likeComment
+/////////////////////////////////
+function likeComment(commentId) {
+  fetch(`/likeComment/${commentId}?timestamp=${new Date().getTime()}`, { method: "POST" })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        const likeCountSpan = document.getElementById(`like_count_${commentId}`);
+        likeCountSpan.textContent = "❤ " + data.newLikeCount;
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
 
 async function getCurrentUsername() {
   const response = await fetch("/get/usernameFromCookie");

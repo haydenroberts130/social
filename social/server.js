@@ -434,6 +434,28 @@ app.post("/likePost/:postId", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+/////////////////////////////////
+// likeComment
+/////////////////////////////////
+app.post("/likeComment/:commentId", async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    const com = await Comment.findById(commentId);
+    if (com) {
+      if (!com.likes) {
+        com.likes = 0;
+      }
+      com.likes += 1;
+      await com.save();
+      res.json({ success: true, newLikeCount: com.likes });
+    } else {
+      res.status(404).json({ success: false, message: "Post not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
 
 app.use("/uploads", express.static("./uploads"));
 
