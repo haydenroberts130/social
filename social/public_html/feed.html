@@ -106,7 +106,7 @@
                 postDiv.classList.add("post");
 
                 const postUsernameDiv = document.createElement("div");
-                postUsernameDiv.innerHTML = `<a href="account.html?username=${post.user}" class="username" style="text-decoration: underline;">${post.user}</a>`;
+                postUsernameDiv.innerHTML = `<span><span style="color: gray";>@</span><a href="account.html?username=${post.user}" class="username" style="text-decoration: underline;">${post.user}</a></span>`;
 
                 const postImageDiv = document.createElement("div");
                 postImageDiv.classList.add("post-image");

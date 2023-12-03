@@ -318,20 +318,21 @@ async function showPosts() {
           }
 
           postElement.innerHTML = `
-              <div><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${post.user}</a></div>
-              <div class="post-image">
-                  <img src="./${post.image}" alt="${post.caption}">
-              </div>
-              <hr>
-              <div class="post-box">
-              <div id="caption_${post._id}" class="post-caption">${post.caption}</div>
-              <div class="post-content">
-                <input type="text" id="edit_caption_${post._id}" class="edit-caption-input" style="display:none;" value="${post.caption}">
-                ${editButtonHTML}
-                <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
-                ${deleteButtonHTML}
+            <span><span style="color: gray";>@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${post.user}</a></span>
+            <div class="post-image">
+              <img src="./${post.image}" alt="${post.caption}">
             </div>
-        `;
+            <hr>
+            <div class="post-box">
+            <div id="caption_${post._id}" class="post-caption">${post.caption}</div>
+            <div class="post-content">
+              <input type="text" id="edit_caption_${post._id}" class="edit-caption-input" style="display:none;" value="${post.caption}">
+              ${editButtonHTML}
+              <button style="font-size: 20px;" class="styled-button" onclick="likePost('${post._id}')"><span id="like_count_${post._id}">❤ ${post.likes != null ? post.likes : 0}</span></button>
+              ${deleteButtonHTML}
+            </div>
+            </div>
+          `;
           disp.appendChild(postElement);
         });
       }

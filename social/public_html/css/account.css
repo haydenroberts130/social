@@ -260,3 +260,12 @@ hr {
   justify-content: space-between;
   align-items: center;
 }
+
+.username {
+  color: black;
+
+}
+
+.username:hover {
+  color: #f7319e; /* Change to your desired hover color */
+}
