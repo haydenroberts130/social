@@ -147,6 +147,51 @@
                 postDiv.appendChild(hrDiv);
                 postDiv.appendChild(postContentDiv);
 
+                // Add the comment section
+
+                const hrComment = document.createElement("hr");
+                postDiv.appendChild(hrComment);
+
+                const commentSectionDiv = document.createElement("div");
+                commentSectionDiv.classList.add("comment-section");
+
+                const commentToggleButton = document.createElement("button");
+                commentToggleButton.style.fontSize = "20px";
+                commentToggleButton.classList.add(
+                  "styled-button",
+                  "comment-toggle-button"
+                );
+                commentToggleButton.textContent = "Comment";
+                commentToggleButton.onclick = function () {
+                  toggleCommentInput(post._id);
+                };
+
+                const commentInput = document.createElement("textarea");
+                commentInput.classList.add("comment-input");
+                commentInput.id = `comment_${post._id}`;
+                commentInput.placeholder = "Add a comment...";
+                commentInput.style.display = "none";
+
+                const addCommentButton = document.createElement("button");
+                addCommentButton.style.fontSize = "20px";
+                addCommentButton.classList.add("styled-button");
+                addCommentButton.textContent = "Add Comment";
+                addCommentButton.style.display = "none";
+                addCommentButton.onclick = function () {
+                  commentCreate(post._id);
+                };
+
+                const postCommentsDiv = document.createElement("div");
+                postCommentsDiv.id = `postComments_${post._id}`;
+
+                commentSectionDiv.appendChild(commentToggleButton);
+                commentSectionDiv.appendChild(commentInput);
+                commentSectionDiv.appendChild(addCommentButton);
+
+                postDiv.appendChild(commentSectionDiv);
+                postDiv.appendChild(postCommentsDiv);
+
+                fetchComments(post._id);
                 feedContainer.appendChild(postDiv);
               }
             }
@@ -155,6 +200,43 @@
           console.error(error);
         }
       });
+      async function fetchComments(postId) {
+        try {
+          const response = await fetch(`/get/comments/${postId}`);
+          const comments = await response.json();
+
+          // Append existing comments
+          appendComments(postId, comments);
+        } catch (error) {
+          console.error("Error fetching comments:", error);
+        }
+      }
+
+      function appendComments(postId, comments) {
+        const postCommentsDiv = document.getElementById(
+          `postComments_${postId}`
+        );
+
+        // Clear existing comments
+        postCommentsDiv.innerHTML = "";
+
+        // Append each comment
+        comments.forEach((comment) => {
+          const commentDiv = document.createElement("div");
+          commentDiv.classList.add("comment");
+
+          const commentUserSpan = document.createElement("span");
+          commentUserSpan.innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a>`;
+
+          const commentTextSpan = document.createElement("span");
+          commentTextSpan.textContent = `: ${comment.text}`;
+
+          commentDiv.appendChild(commentUserSpan);
+          commentDiv.appendChild(commentTextSpan);
+
+          postCommentsDiv.appendChild(commentDiv);
+        });
+      }
     </script>
   </body>
 </html>

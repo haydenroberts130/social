@@ -207,3 +207,9 @@ hr {
 .username:hover {
   color: #f7319e; /* Change to your desired hover color */
 }
+
+.comment-section{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
