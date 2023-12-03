@@ -348,8 +348,16 @@ async function showPosts() {
             .then((response) => response.json())
             .then((comments) => {
               comments.forEach((comment) => {
+
+                let deleteCommentHTML = '';
+
+                if (loggedInUsername === post.user || loggedInUsername === comment.user) {
+                  deleteCommentHTML = `<button class="styled-button comment-delete-button" onclick="deleteComment('${post._id}', '${comment._id}')">Delete</button>`;
+                }
+
                 const commentElement = document.createElement("div");
                 commentElement.classList.add("comment");
+                commentElement.setAttribute("data-comment-id", comment._id);
                 commentElement.innerHTML = `
                 <span><span style="color: gray";>@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a></span>
 
@@ -357,6 +365,7 @@ async function showPosts() {
                   <button class="styled-button comment-like-button" onclick="likeComment('${comment._id}')">
                     <span id="comment_like_count_${comment._id}">❤ ${comment.likes != null ? comment.likes : 0}</span>
                   </button>
+                  ${deleteCommentHTML}
                 `;
                 commentsContainer.appendChild(commentElement);
               });
@@ -467,13 +476,21 @@ async function commentCreate(postId) {
       );
       const commentElement = document.createElement("div");
       commentElement.classList.add("comment");
-      commentElement.innerHTML = `
-      <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
+      commentElement.setAttribute("data-comment-id", result.comment._id); // Correctly set the data-comment-id
 
+      let deleteCommentHTML = '';
+
+      if (user === result.comment.user) {
+        deleteCommentHTML = `<button class="styled-button comment-delete-button" onclick="deleteComment('${postId}', '${result.comment._id}')">Delete</button>`;
+      }
+
+      commentElement.innerHTML = `
+        <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
         <span>: ${result.comment.text}</span>
         <button class="styled-button comment-like-button" onclick="likeComment('${result.comment._id}')">
           <span id="comment_like_count_${result.comment._id}">❤ ${result.comment.likes != null ? result.comment.likes : 0}</span>
         </button>
+        ${deleteCommentHTML}
       `;
       commentsContainer.appendChild(commentElement);
       document.getElementById("comment_" + postId).value = "";
@@ -481,4 +498,35 @@ async function commentCreate(postId) {
     .catch((error) => {
       console.error("Error:", error);
     });
+}
+
+
+// DELETE COMMENTE DELETE COMMENTE DELETE COMMENTE
+function deleteComment(postId, commentId) {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this comment?"
+  );
+
+  if (confirmDelete) {
+    fetch(`/delete/comment/${commentId}`, { method: "DELETE" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // First, find the post element
+          const postElement = document.getElementById(`post_${postId}`);
+
+          // Then find the comment within this post
+          const commentElement = postElement.querySelector(`.comment[data-comment-id='${commentId}']`);
+          
+          if (commentElement) {
+            commentElement.remove();
+          }
+        } else {
+          console.error("Failed to delete comment");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 }

@@ -210,6 +210,6 @@ hr {
   align-items: center;
 }
 
-.comment-like-button{
+.comment-like-button .comment-delete-button{
   margin-left: auto;
 }
