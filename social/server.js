@@ -489,6 +489,7 @@ app.delete("/delete/post/:postId", async (req, res) => {
     await Post.deleteOne({ _id: postId });
 
     await User.updateOne({ posts: postId }, { $pull: { posts: postId } });
+    await Comment.deleteMany({ post: postId });
 
     res.json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
