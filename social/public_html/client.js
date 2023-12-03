@@ -334,9 +334,15 @@ async function showPosts() {
             .then((comments) => {
               comments.forEach((comment) => {
                 const commentElement = document.createElement("div");
+                commentElement.classList.add("comment");
                 commentElement.innerHTML = `
-                              <span><span style="color: gray";>@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a></span>
-                              <span>: ${comment.text}</span>`;
+                <span><span style="color: gray";>@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a></span>
+
+                  <span>: ${comment.text}</span>
+                  <button class="styled-button comment-like-button" onclick="likeComment('${comment._id}')">
+                    <span id="comment_like_count_${comment._id}">❤ ${comment.likes != null ? comment.likes : 0}</span>
+                  </button>
+                `;
                 commentsContainer.appendChild(commentElement);
               });
             })
@@ -445,9 +451,15 @@ async function commentCreate(postId) {
         `postComments_${postId}`
       );
       const commentElement = document.createElement("div");
+      commentElement.classList.add("comment");
       commentElement.innerHTML = `
-          <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
-          <span>: ${result.comment.text}</span>`;
+      <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
+
+        <span>: ${result.comment.text}</span>
+        <button class="styled-button comment-like-button" onclick="likeComment('${result.comment._id}')">
+          <span id="comment_like_count_${result.comment._id}">❤ ${result.comment.likes != null ? result.comment.likes : 0}</span>
+        </button>
+      `;
       commentsContainer.appendChild(commentElement);
       document.getElementById("comment_" + postId).value = "";
     })

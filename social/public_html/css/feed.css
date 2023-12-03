@@ -204,3 +204,12 @@ hr {
   justify-content: space-between;
   align-items: center;
 }
+
+.comment{
+  display: flex;
+  align-items: center;
+}
+
+.comment-like-button{
+  margin-left: auto;
+}
