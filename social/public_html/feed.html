@@ -102,7 +102,7 @@
               for (const post of posts) {
                 console.log("POST: " + JSON.stringify(post));
                 const postDiv = document.createElement("div");
-                // console.log("Post = " + post);
+                postDiv.id = `post_${post._id}`;
                 postDiv.classList.add("post");
 
                 const postUsernameDiv = document.createElement("div");
@@ -174,7 +174,10 @@
 
                 const addCommentButton = document.createElement("button");
                 addCommentButton.style.fontSize = "20px";
-                addCommentButton.classList.add("styled-button");
+                addCommentButton.classList.add(
+                  "styled-button",
+                  "add-comment-button"
+                );
                 addCommentButton.textContent = "Add Comment";
                 addCommentButton.style.display = "none";
                 addCommentButton.onclick = function () {

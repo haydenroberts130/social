@@ -337,7 +337,7 @@ async function showPosts() {
                       <div class="comment-section">
                           <button style="font-size: 20px;" class="styled-button comment-toggle-button" onclick="toggleCommentInput('${post._id}')">Comment</button>
                           <textarea class="comment-input" id="comment_${post._id}" placeholder="Add a comment..." style="display: none;"></textarea>
-                          <button style="font-size: 20px; display: none;" class="styled-button" onclick="commentCreate('${post._id}')">Add Comment</button>
+                          <button style="font-size: 20px; display: none;" class="styled-button add-comment-button" onclick="commentCreate('${post._id}')">Add Comment</button>
                       </div>
                       <div id="postComments_${post._id}"></div>
                   `;
@@ -431,22 +431,22 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-
 function toggleCommentInput(postId) {
   var commentInput = document.getElementById('comment_' + postId);
-  var addButton = document.querySelector('.comment-section button');
-  var addCommentButton = document.querySelector('.comment-section button:last-child');
+  var addButton = document.querySelector(`#post_${postId} .comment-section button`);
+  var addCommentButton = document.querySelector(`#post_${postId} .add-comment-button`);
 
   if (commentInput.style.display === 'none') {
-      // Show textarea and "Add Comment" button, hide "Comment" button
-      commentInput.style.display = 'block';
-      addButton.style.display = 'none';
-      addCommentButton.style.display = 'inline-block';
+    // Show textarea and "Add Comment" button, hide "Comment" button
+    commentInput.style.display = 'block';
+    addButton.style.display = 'none';
+    addCommentButton.style.display = 'inline-block';
+    console.log(document.getElementById('comment_' + postId));
   } else {
-      // Hide textarea and "Add Comment" button, show "Comment" button
-      commentInput.style.display = 'none';
-      addButton.style.display = 'inline-block';
-      addCommentButton.style.display = 'none';
+    // Hide textarea and "Add Comment" button, show "Comment" button
+    commentInput.style.display = 'none';
+    addButton.style.display = 'inline-block';
+    addCommentButton.style.display = 'none';
   }
 }
 
@@ -462,9 +462,6 @@ async function commentCreate(postId) {
   }).then((response) => response.json())
       .then((result) => {
           const commentsContainer = document.getElementById(`postComments_${postId}`);
-          
-          console.log("REACHED ADDING COMMENTS!!!!")
-
           const commentElement = document.createElement("div");
           commentElement.innerHTML = `
           <span><span style="color: gray";>@</span><a href="account.html?username=${result.comment.user}" class="username" style="text-decoration: underline;">${result.comment.user}</a></span>
