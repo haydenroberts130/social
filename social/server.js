@@ -555,12 +555,10 @@ app.get('/get/comments/:postId', async (req, res) => {
   }
 });
 
-//DELETE COMMENTE DELET COMMENT!!!!
 app.delete("/delete/comment/:commentId", async (req, res) => {
   const commentId = req.params.commentId;
 
   try {
-    // Find the comment by ID
     const comment = await Comment.findById(commentId);
 
     if (!comment) {
@@ -569,13 +567,7 @@ app.delete("/delete/comment/:commentId", async (req, res) => {
         .json({ success: false, message: "Comment not found" });
     }
 
-    // Optional: Check if the user deleting the comment is the one who posted it
-    // This requires authentication and user ID comparison
-
-    // Delete the comment
     await Comment.deleteOne({ _id: commentId });
-
-    // Update the post to remove the comment reference
     await Post.updateOne({ comments: commentId }, { $pull: { comments: commentId } });
 
     res.json({ success: true, message: "Comment deleted successfully" });
