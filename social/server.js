@@ -434,9 +434,7 @@ app.post("/likePost/:postId", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
-/////////////////////////////////
-// likeComment
-/////////////////////////////////
+
 app.post("/likeComment/:commentId", async (req, res) => {
   try {
     const commentId = req.params.commentId;

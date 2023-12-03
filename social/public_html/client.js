@@ -273,7 +273,7 @@ function likeComment(commentId) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        const likeCountSpan = document.getElementById(`like_count_${commentId}`);
+        const likeCountSpan = document.getElementById(`comment_like_count_${commentId}`);
         likeCountSpan.textContent = "❤ " + data.newLikeCount;
       }
     })
