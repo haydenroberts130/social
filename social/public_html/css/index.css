@@ -58,7 +58,7 @@ label {
     display: block;
     margin-bottom: 5px;
     color: #333;
-    width: 100px; /* Adjust the width based on your preference */
+    width: 100px;
 }
 
 .input-container {
@@ -75,7 +75,7 @@ input[type="submit"] {
     border-radius: 4px;
     width: 250px;
     font-size: 16px;
-    margin-bottom: 10px; /* Add margin to separate input boxes */
+    margin-bottom: 10px;
 }
 
 input[type="submit"] {

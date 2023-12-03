@@ -9,12 +9,9 @@ body {
     background: linear-gradient(to bottom, #F58529, #DD2A7B);
     background-size: cover;
     background-attachment: fixed;
-    /* This will fix your background in place */
     height: 97.4vh;
     overflow-x: hidden;
-    /* Prevents horizontal scroll if any */
 }
-
 
 #topContainer {
 
@@ -23,16 +20,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Adjusted to space-between for better distribution */
     gap: 10px;
-
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
-/* #header, #sideBar {
-    margin-right: 20px;
-  } */
 
 #userBar {
     width: 30%;
@@ -58,7 +49,6 @@ body {
 .styled-button:hover {
     background-color: #0d456c;
 }
-
 
 #displayArea {
     position: relative;
@@ -100,9 +90,7 @@ body {
 #topContainer,
 #displayArea {
     width: 80%;
-    /* Set the same width for both */
     margin: 20px auto;
-    /* Top and bottom margins at 20px, auto margins on left and right for centering */
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -116,7 +104,6 @@ body {
     margin-bottom: 20px;
     padding: 15px;
     max-width: 900px;
-    /* Adjust as needed */
     margin: 20px auto;
     text-align: center;
 }
@@ -131,11 +118,9 @@ body {
 .post div {
     margin-top: 10px;
     color: #333;
-    /* Dark gray text */
     font-family: "Arial", sans-serif;
 }
 
-/* If you have like, comment buttons or other interactive elements */
 .post .interactive-buttons {
     display: flex;
     justify-content: space-between;
@@ -156,14 +141,8 @@ body {
 }
 
 .post {
-    /* Existing styles */
     display: flex;
     flex-direction: column;
-}
-
-.post-image {
-    /* Styles for the image container if needed */
-
 }
 
 .post-content {
@@ -177,14 +156,11 @@ hr {
     border: 0;
     height: 1px;
     background-color: #ddd;
-    /* Or any color that fits your design */
     margin: 10px 0;
 }
 
 #likeButton {
-    /* Existing styles */
     margin-left: auto;
-    /* Pushes the button to the right */
 }
 
 .helpText{

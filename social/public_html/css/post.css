@@ -13,7 +13,7 @@ body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom, #F58529, #DD2A7B);
+  background: linear-gradient(to bottom, #f58529, #dd2a7b);
   background-size: cover;
   height: 100vh;
   display: flex;
@@ -95,6 +95,6 @@ input[type="button"]:hover {
   background-color: #0d456c;
 }
 
-#buttonBar{
+#buttonBar {
   width: 30%;
 }

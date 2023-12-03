@@ -1,127 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>User Account</title>
-    <link rel="stylesheet" href="./css/account.css" />
-    <script src="client.js" defer></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", async function () {
-        try {
-          // Fetch the username from the server
-          const response = await fetch("/get/usernameFromCookie");
-          if (!response.ok) {
-            throw new Error("Failed to fetch username.");
-          }
 
-          // Get the account username from the URL
-          const urlParams = new URLSearchParams(window.location.search);
-          const accUsername = urlParams.get("username");
+<head>
+  <title>User Account</title>
+  <link rel="stylesheet" href="./css/account.css" />
+  <script src="client.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      try {
+        const response = await fetch("/get/usernameFromCookie");
+        if (!response.ok) {
+          throw new Error("Failed to fetch username.");
+        }
+        const username = await response.text();
+        const followButton = document.getElementById("followButton");
+        const urlParams = new URLSearchParams(window.location.search);
+        const accUsername = urlParams.get("username");
+        const accTopElement = document.getElementById("accTop");
+        if (accTopElement) {
+          accTopElement.innerHTML = `<span style="font-size: 2em;"><span style="color: gray;">@</span>${accUsername}</span>`;
+        }
+        if (username == accUsername) {
+          return;
+        }
+        const followStatusResponse = await fetch(
+          `/check-follow/${username}/${accUsername}`
+        );
 
-          // Update the content of the element with id "accTop"
-          const accTopElement = document.getElementById("accTop");
-          if (accTopElement) {
-            accTopElement.innerHTML = `<span style="font-size: 2em;"><span style="color: gray;">@</span>${accUsername}</span>`;
-          }
+        if (!followStatusResponse.ok) {
+          throw new Error("Failed to fetch follow status.");
+        }
 
-          // Dont add follow button if you are viewing your own account
-          if (username == accUsername){
-            return;
-          }
+        let isFollowing = await followStatusResponse.json();
 
-          // Fetch the follow status from the server
-          const followStatusResponse = await fetch(
-            `/check-follow/${username}/${accUsername}`
+        updateFollowButton(isFollowing, followButton, accTopElement);
+
+        followButton.addEventListener("click", async function () {
+          const followAction = isFollowing ? "unfollow" : "follow";
+          const followResponse = await fetch(
+            `/${followAction}/${username}/${accUsername}`,
+            {
+              method: "POST",
+            }
           );
 
-          if (!followStatusResponse.ok) {
-            throw new Error("Failed to fetch follow status.");
+          if (!followResponse.ok) {
+            throw new Error(`Failed to ${followAction} user.`);
           }
 
-          let isFollowing = await followStatusResponse.json();
+          isFollowing = !isFollowing;
 
           updateFollowButton(isFollowing, followButton, accTopElement);
-
-          followButton.addEventListener("click", async function () {
-            const followAction = isFollowing ? "unfollow" : "follow";
-            const followResponse = await fetch(
-              `/${followAction}/${username}/${accUsername}`,
-              {
-                method: "POST",
-              }
-            );
-
-            if (!followResponse.ok) {
-              throw new Error(`Failed to ${followAction} user.`);
-            }
-
-            isFollowing = !isFollowing;
-
-            updateFollowButton(isFollowing, followButton, accTopElement);
-          });
-        } catch (error) {
-          console.error("Error:", error.message);
-          alert(error.message);
-        }
-      });
-
-      function updateFollowButton(isFollowing, followButton, accTopElement) {
-        if (isFollowing) {
-          followButton.value = "Unfollow";
-          followButton.style.backgroundColor = "red";
-        } else {
-          followButton.value = "Follow";
-          followButton.style.backgroundColor = "green";
-        }
-
-        // Remove existing followButton from accTopElement
-        const existingFollowButton = accTopElement.querySelector("#followButton");
-        if (existingFollowButton) {
-          accTopElement.removeChild(existingFollowButton);
-        }
-
-        // Append the updated followButton to accTopElement
-        accTopElement.appendChild(followButton);
+        });
+      } catch (error) {
+        console.error("Error:", error.message);
+        alert(error.message);
       }
-    </script>
-  </head>
-    <body>
-        <div id="header">
-            <span id="accTop">
-                <p>profile pic + name</p>
-                <h1 id="displayName"></h1>
-            </span>
-            <div id ="buttonBar">
-                <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()" />
-                <input type="submit" value="Logout" id="logoutButton" class="styled-button" onclick="logout()"/>
-                <input type="submit" value="Feed" id="homeButton" class="styled-button" onclick="goToFeed()" />
-            </div>
-        </div>
-        <div id="displayArea">
-            <div class="post">
-                <!-- <div>username</div>
-                <div class="post-image">
-                    <img src="./img/testing.jpeg" alt="TESTING PICTURE">
-                </div>
-                <hr>
-                <div class="post-content">
-                    <span>caption goes here</span>
-                    <button style="font-size: 20px;" class="styled-button" onclick="likePost('1234')">❤</button>
-                    <span id="like_count_1234">0</span> Likes
-                </div> -->
-            </div>
-        </div>
-        <hr />
-        <!-- This creates a visible line between the image and the caption -->
-        <div class="post-content">
-          <span>caption goes here</span>
-          <input
-            type="submit"
-            value="<3"
-            id="likeButton"
-            class="styled-button"
-          />
-        </div>
-      </div>
+    });
+
+    function updateFollowButton(isFollowing, followButton, accTopElement) {
+      if (isFollowing) {
+        followButton.value = "Unfollow";
+        followButton.style.backgroundColor = "red";
+      } else {
+        followButton.value = "Follow";
+        followButton.style.backgroundColor = "green";
+      }
+
+      const existingFollowButton = accTopElement.querySelector("#followButton");
+      if (existingFollowButton) {
+        accTopElement.removeChild(existingFollowButton);
+      }
+
+      accTopElement.appendChild(followButton);
+    }
+  </script>
+</head>
+
+<body>
+  <div id="header">
+    <span id="accTop">
+      <h1 id="displayName"></h1>
+      <input type="submit" id="followButton" />
+    </span>
+    <div id="buttonBar">
+      <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()" />
+      <input type="submit" value="Logout" id="logoutButton" class="styled-button" onclick="logout()" />
+      <input type="submit" value="Feed" id="homeButton" class="styled-button" onclick="goToFeed()" />
     </div>
-  </body>
+  </div>
+  <div id="displayArea"></div>
+  </div>
+  </div>
+  </div>
+</body>
+
 </html>

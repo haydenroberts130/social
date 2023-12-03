@@ -2,244 +2,212 @@
 <html lang="en">
 
 <head>
-    <title>Your Feed</title>
-    <link rel="stylesheet" href="./css/feed.css" />
-    <script src="client.js" defer></script>
+  <title>Your Feed</title>
+  <link rel="stylesheet" href="./css/feed.css" />
+  <script src="client.js" defer></script>
 </head>
 
 <body>
-    <div id="topContainer">
-      <div id="header">
-        <span id="accTop">
-          <h1 id="displayName">Placeholder Name</h1>
-        </span>
-      </div>
-      <script>
-        const getUsername = () => {
-          return fetch("/get/usernameFromCookie").then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch username");
-            }
-            return response.text();
-          });
-        };
-
-        getUsername()
-          .then((username) => {
-            document.getElementById(
-              "displayName"
-            ).innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${username}</a>'s feed`;
-          })
-          .catch((error) => {
-            console.error("Error:", error.message);
-          });
-      </script>
-      <div id="sideBar">
-        <input id="sAccounts" type="text" name="sAccounts" />
-        <input
-          type="submit"
-          value="Search Users"
-          name="searchAccounts"
-          onclick="searchAccounts"
-        />
-      </div>
-      <div id="rightSideBar">
-        <input
-          type="submit"
-          value="+"
-          id="postButton"
-          class="styled-button"
-          onclick="goToPost()"
-        />
-        <input
-          type="submit"
-          value="Logout"
-          id="logoutButton"
-          class="styled-button"
-          onclick="logout()"
-        />
-        <input
-          type="submit"
-          value="Help"
-          id="helpButton"
-          class="styled-button"
-          onclick="goToHelp()"
-        />
-      </div>
+  <div id="topContainer">
+    <div id="header">
+      <span id="accTop">
+        <h1 id="displayName">Placeholder Name</h1>
+      </span>
     </div>
-    <div id="displayArea"></div>
     <script>
-      document.addEventListener("DOMContentLoaded", async function () {
-        const feedContainer = document.getElementById("displayArea");
-
-        try {
-          const username = await getUsername();
-
-          if (!username) {
-            console.error("Failed to get username");
-            return;
+      const getUsername = () => {
+        return fetch("/get/usernameFromCookie").then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch username");
           }
+          return response.text();
+        });
+      };
 
-          // Make a request to your server to get the following list
-          const responseFollowing = await fetch(
-            `/get/getFollowingList?username=${username}`
-          );
-          const followingList = await responseFollowing.json();
+      getUsername()
+        .then((username) => {
+          document.getElementById(
+            "displayName"
+          ).innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${username}" class="username" style="text-decoration: underline;">${username}</a>'s feed`;
+        })
+        .catch((error) => {
+          console.error("Error:", error.message);
+        });
+    </script>
+    <div id="sideBar">
+      <input id="sAccounts" type="text" name="sAccounts" />
+      <input type="submit" value="Search Users" name="searchAccounts" onclick="searchUsers()" />
+      <div id="list"></div>
+    </div>
+    <div id="rightSideBar">
+      <input type="submit" value="+" id="postButton" class="styled-button" onclick="goToPost()" />
+      <input type="submit" value="Logout" id="logoutButton" class="styled-button" onclick="logout()" />
+      <input type="submit" value="Help" id="helpButton" class="styled-button" onclick="goToHelp()" />
+    </div>
+  </div>
+  <div id="displayArea"></div>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const feedContainer = document.getElementById("displayArea");
 
-          if (followingList.length === 0) {
-            // Display a message if the user is not following anyone
-            feedContainer.innerHTML =
-              "<h1 class='empty-feed-message'>Follow people to see their posts here!</h1>";
-          } else {
-            // Display posts from the user's follow list
-            for (const followedUser of followingList) {
-              // Make a request to your server to get posts for each followed user
-              const responsePosts = await fetch(
-                `/get/getPostsFromUser?username=${followedUser}`
-              );
-              const posts = await responsePosts.json();
+      try {
+        const username = await getUsername();
 
-              for (const post of posts) {
-                console.log("POST: " + JSON.stringify(post));
-                const postDiv = document.createElement("div");
-                postDiv.id = `post_${post._id}`;
-                postDiv.classList.add("post");
+        if (!username) {
+          console.error("Failed to get username");
+          return;
+        }
 
-                const postUsernameDiv = document.createElement("div");
-                postUsernameDiv.innerHTML = `<span><span style="color: gray";>@</span><a href="account.html?username=${post.user}" class="username" style="text-decoration: underline;">${post.user}</a></span>`;
+        const responseFollowing = await fetch(
+          `/get/getFollowingList?username=${username}`
+        );
+        const followingList = await responseFollowing.json();
 
-                const postImageDiv = document.createElement("div");
-                postImageDiv.classList.add("post-image");
+        if (followingList.length === 0) {
+          feedContainer.innerHTML =
+            "<h1 class='empty-feed-message'>Follow people to see their posts here!</h1>";
+        } else {
+          for (const followedUser of followingList) {
+            const responsePosts = await fetch(
+              `/get/getPostsFromUser?username=${followedUser}`
+            );
+            const posts = await responsePosts.json();
 
-                const postImage = document.createElement("img");
-                postImage.src = `./${post.image}`;
-                postImage.alt = post.caption;
+            for (const post of posts) {
+              const postDiv = document.createElement("div");
+              postDiv.id = `post_${post._id}`;
+              postDiv.classList.add("post");
 
-                postImageDiv.appendChild(postImage);
+              const postUsernameDiv = document.createElement("div");
+              postUsernameDiv.innerHTML = `<span><span style="color: gray";>@</span><a href="account.html?username=${post.user}" class="username" style="text-decoration: underline;">${post.user}</a></span>`;
 
-                const hrDiv = document.createElement("hr");
+              const postImageDiv = document.createElement("div");
+              postImageDiv.classList.add("post-image");
 
-                const postContentDiv = document.createElement("div");
-                postContentDiv.classList.add("post-content");
-                const captionSpan = document.createElement("span");
-                captionSpan.textContent = post.caption;
+              const postImage = document.createElement("img");
+              postImage.src = `./${post.image}`;
+              postImage.alt = post.caption;
 
-                const likeButton = document.createElement("button");
+              postImageDiv.appendChild(postImage);
 
-                // Set button attributes
-                likeButton.id = `like_count_${post._id}`;
-                likeButton.style.fontSize = "20px";
-                likeButton.classList.add("styled-button");
-                if (post.likes == null) {
-                  likeButton.textContent = "❤ 0";
-                } else {
-                  likeButton.textContent = "❤ " + post.likes;
-                }
-                likeButton.addEventListener("click", function () {
-                  likePost(post._id);
-                });
+              const hrDiv = document.createElement("hr");
 
-                postContentDiv.appendChild(captionSpan);
-                postContentDiv.appendChild(likeButton);
+              const postContentDiv = document.createElement("div");
+              postContentDiv.classList.add("post-content");
+              const captionSpan = document.createElement("span");
+              captionSpan.textContent = post.caption;
 
-                postDiv.appendChild(postUsernameDiv);
-                postDiv.appendChild(postImageDiv);
-                postDiv.appendChild(hrDiv);
-                postDiv.appendChild(postContentDiv);
+              const likeButton = document.createElement("button");
 
-                // Add the comment section
-
-                const hrComment = document.createElement("hr");
-                postDiv.appendChild(hrComment);
-
-                const commentSectionDiv = document.createElement("div");
-                commentSectionDiv.classList.add("comment-section");
-
-                const commentToggleButton = document.createElement("button");
-                commentToggleButton.style.fontSize = "20px";
-                commentToggleButton.classList.add(
-                  "styled-button",
-                  "comment-toggle-button"
-                );
-                commentToggleButton.textContent = "Comment";
-                commentToggleButton.onclick = function () {
-                  toggleCommentInput(post._id);
-                };
-
-                const commentInput = document.createElement("textarea");
-                commentInput.classList.add("comment-input");
-                commentInput.id = `comment_${post._id}`;
-                commentInput.placeholder = "Add a comment...";
-                commentInput.style.display = "none";
-
-                const addCommentButton = document.createElement("button");
-                addCommentButton.style.fontSize = "20px";
-                addCommentButton.classList.add(
-                  "styled-button",
-                  "add-comment-button"
-                );
-                addCommentButton.textContent = "Add Comment";
-                addCommentButton.style.display = "none";
-                addCommentButton.onclick = function () {
-                  commentCreate(post._id);
-                };
-
-                const postCommentsDiv = document.createElement("div");
-                postCommentsDiv.id = `postComments_${post._id}`;
-
-                commentSectionDiv.appendChild(commentToggleButton);
-                commentSectionDiv.appendChild(commentInput);
-                commentSectionDiv.appendChild(addCommentButton);
-
-                postDiv.appendChild(commentSectionDiv);
-                postDiv.appendChild(postCommentsDiv);
-
-                fetchComments(post._id);
-                feedContainer.appendChild(postDiv);
+              likeButton.id = `like_count_${post._id}`;
+              likeButton.style.fontSize = "20px";
+              likeButton.classList.add("styled-button");
+              if (post.likes == null) {
+                likeButton.textContent = "❤ 0";
+              } else {
+                likeButton.textContent = "❤ " + post.likes;
               }
+              likeButton.addEventListener("click", function () {
+                likePost(post._id);
+              });
+
+              postContentDiv.appendChild(captionSpan);
+              postContentDiv.appendChild(likeButton);
+
+              postDiv.appendChild(postUsernameDiv);
+              postDiv.appendChild(postImageDiv);
+              postDiv.appendChild(hrDiv);
+              postDiv.appendChild(postContentDiv);
+
+              const hrComment = document.createElement("hr");
+              postDiv.appendChild(hrComment);
+
+              const commentSectionDiv = document.createElement("div");
+              commentSectionDiv.classList.add("comment-section");
+
+              const commentToggleButton = document.createElement("button");
+              commentToggleButton.style.fontSize = "20px";
+              commentToggleButton.classList.add(
+                "styled-button",
+                "comment-toggle-button"
+              );
+              commentToggleButton.textContent = "Comment";
+              commentToggleButton.onclick = function () {
+                toggleCommentInput(post._id);
+              };
+
+              const commentInput = document.createElement("textarea");
+              commentInput.classList.add("comment-input");
+              commentInput.id = `comment_${post._id}`;
+              commentInput.placeholder = "Add a comment...";
+              commentInput.style.display = "none";
+
+              const addCommentButton = document.createElement("button");
+              addCommentButton.style.fontSize = "20px";
+              addCommentButton.classList.add(
+                "styled-button",
+                "add-comment-button"
+              );
+              addCommentButton.textContent = "Add Comment";
+              addCommentButton.style.display = "none";
+              addCommentButton.onclick = function () {
+                commentCreate(post._id);
+              };
+
+              const postCommentsDiv = document.createElement("div");
+              postCommentsDiv.id = `postComments_${post._id}`;
+
+              commentSectionDiv.appendChild(commentToggleButton);
+              commentSectionDiv.appendChild(commentInput);
+              commentSectionDiv.appendChild(addCommentButton);
+
+              postDiv.appendChild(commentSectionDiv);
+              postDiv.appendChild(postCommentsDiv);
+
+              fetchComments(post._id);
+              feedContainer.appendChild(postDiv);
             }
           }
-        } catch (error) {
-          console.error(error);
         }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+    async function fetchComments(postId) {
+      try {
+        const response = await fetch(`/get/comments/${postId}`);
+        const comments = await response.json();
+
+        appendComments(postId, comments);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    }
+
+    function appendComments(postId, comments) {
+      const postCommentsDiv = document.getElementById(
+        `postComments_${postId}`
+      );
+
+      postCommentsDiv.innerHTML = "";
+
+      comments.forEach((comment) => {
+        const commentDiv = document.createElement("div");
+        commentDiv.classList.add("comment");
+
+        const commentUserSpan = document.createElement("span");
+        commentUserSpan.innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a>`;
+
+        const commentTextSpan = document.createElement("span");
+        commentTextSpan.textContent = ` : ${comment.text}`;
+
+        commentDiv.appendChild(commentUserSpan);
+        commentDiv.appendChild(commentTextSpan);
+
+        postCommentsDiv.appendChild(commentDiv);
       });
-      async function fetchComments(postId) {
-        try {
-          const response = await fetch(`/get/comments/${postId}`);
-          const comments = await response.json();
+    }
+  </script>
+</body>
 
-          // Append existing comments
-          appendComments(postId, comments);
-        } catch (error) {
-          console.error("Error fetching comments:", error);
-        }
-      }
-
-      function appendComments(postId, comments) {
-        const postCommentsDiv = document.getElementById(
-          `postComments_${postId}`
-        );
-
-        // Clear existing comments
-        postCommentsDiv.innerHTML = "";
-
-        // Append each comment
-        comments.forEach((comment) => {
-          const commentDiv = document.createElement("div");
-          commentDiv.classList.add("comment");
-
-          const commentUserSpan = document.createElement("span");
-          commentUserSpan.innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a>`;
-
-          const commentTextSpan = document.createElement("span");
-          commentTextSpan.textContent = ` : ${comment.text}`;
-
-          commentDiv.appendChild(commentUserSpan);
-          commentDiv.appendChild(commentTextSpan);
-
-          postCommentsDiv.appendChild(commentDiv);
-        });
-      }
-    </script>
-  </body>
 </html>

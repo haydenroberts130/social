@@ -13,12 +13,10 @@ mongoose.connection.on("error", () => {
   console.log("MongoDB connection error");
 });
 
-//DB stuff
 const db = mongoose.Schema;
 const mongoDBURL = "mongodb://127.0.0.1/social";
 mongoose.connect(mongoDBURL, { useNewURLParser: true });
 
-// USER Schema
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
@@ -38,7 +36,6 @@ userSchema.pre("save", async function (next) {
 const User = mongoose.model("User", userSchema);
 module.exports = User;
 
-// POSTS Schema
 const postSchema = new mongoose.Schema({
   user: String,
   image: String,
@@ -50,7 +47,6 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.model("Post", postSchema);
 
-// COMMENTS Schema
 const commentSchema = new mongoose.Schema({
   post: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true },
   user: String,
@@ -67,31 +63,25 @@ app.get("/", (req, res) => {
 
 app.use("/feed.html/", authenticate);
 app.get("/feed.html/", (req, res, next) => {
-  console.log("another");
   next();
 });
 
 app.use("/post.html/", authenticate);
 app.get("/post.html/", (req, res, next) => {
-  console.log("another");
   next();
 });
 
 app.use("/account.html/", authenticate);
 app.get("/account.html/", (req, res, next) => {
-  console.log("another");
   next();
 });
 
-// Statically sends the html, css, and js to the server
 app.use(express.static(__dirname + "/public_html"));
 
 let sessions = {};
 
 function authenticate(req, res, next) {
   let c = req.cookies;
-  console.log("auth request:");
-  console.log(req.cookies);
   if (c != undefined && c.login != undefined) {
     if (
       sessions[c.login.username] != undefined &&
@@ -128,19 +118,14 @@ function removeSessions() {
 setInterval(removeSessions, 600000);
 
 app.post("/account/login", async (req, res) => {
-  console.log(sessions);
   let u = req.body;
 
   try {
-    let hashed = await bcrypt.hash(u.password, 10);
-    console.log(hashed);
-
     let user = await User.findOne({ username: u.username }).exec();
 
     if (!user) {
       res.end("Could not find account");
     } else {
-      // Use bcrypt.compare to compare hashed password
       const match = await bcrypt.compare(u.password, user.password);
 
       if (match) {
@@ -177,7 +162,6 @@ app.post("/account/logout", (req, res) => {
   }
 });
 
-// GET request for getting all the users from the database
 app.get("/get/users", (req, res) => {
   let users = User.find({}).exec();
   users.then((results) => {
@@ -186,7 +170,6 @@ app.get("/get/users", (req, res) => {
   });
 });
 
-// GET request for getting all the posts from the database
 app.get("/get/posts/", (req, res) => {
   let items = Post.find({}).exec();
   items.then((results) => {
@@ -195,16 +178,13 @@ app.get("/get/posts/", (req, res) => {
   });
 });
 
-// POST: Add a user
 app.post("/add/user", (req, res) => {
   const { username, password } = req.body;
-  // Check if a user with the same username already exists
   User.findOne({ username })
     .then((existingUser) => {
       if (existingUser) {
         res.status(400).json({ message: "Username already exists" });
       } else {
-        // If the username is not found, create a new user
         const newUser = new User({ username, password });
         newUser
           .save()
@@ -241,7 +221,7 @@ app.get("/get/getPostsFromUser", (req, res) => {
   const username = req.query.username;
 
   User.findOne({ username: username })
-    .populate("posts") // Assuming 'posts' is an array of post documents
+    .populate("posts")
     .exec()
     .then((user) => {
       if (user) {
@@ -281,11 +261,10 @@ const handleError = (res, err) => {
   res.status(500).send(err);
 };
 
-// IMAGE UPLOADING CODE
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // 'uploads/' is the folder where images will be saved
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -296,31 +275,21 @@ const upload = multer({ storage: storage });
 
 app.post("/upload/post", upload.single("photo"), async (req, res) => {
   const caption = req.body.caption;
-  const username = req.body.username; // Assuming username is sent along with the form
+  const username = req.body.username;
 
   if (req.file) {
-    const imagePath = req.file.path; // The path where the image is saved
-
-    console.log("///////////////////////////////////");
-    console.log(imagePath);
-    console.log("///////////////////////////////////");
-
-    // Create a new post
+    const imagePath = req.file.path;
     const newPost = new Post({
       user: username,
       image: imagePath,
       caption: caption,
     });
-
     newPost.save();
-    console.log("CHECKPOINT ALPHA");
 
     User.findOne({ username: username }).then((user) => {
       user.posts.push(newPost._id);
       let p = user.save();
-      console.log("CHECKPOINT BRAVO");
       p.then((result) => {
-        console.log("CHECKPOINT CHARLIE");
         res.redirect("/feed.html");
       });
     });
@@ -333,12 +302,11 @@ app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
-// GET request for getting all the users with the substring KEYWORD
 app.get("/search/users/:KEYWORD", (req, res) => {
   var keyword = req.params.KEYWORD;
 
   const users = User.find({
-    username: { $regex: keyword, $options: "i" }, // Using regex for substring search, 'i' for case-insensitive search
+    username: { $regex: keyword, $options: "i" }, 
   }).exec();
 
   users
@@ -352,8 +320,6 @@ app.get("/search/users/:KEYWORD", (req, res) => {
 app.get("/check-follow/:username/:accUsername", async (req, res) => {
   try {
     const { username, accUsername } = req.params;
-
-    // Find the user and the user they want to check
     const user = await User.findOne({ username });
     const accUser = await User.findOne({ username: accUsername });
 
@@ -361,13 +327,12 @@ app.get("/check-follow/:username/:accUsername", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if the user is following accUser
     const isFollowing = user.following.includes(accUser._id);
 
     res.json(isFollowing);
   } catch (error) {
     console.error(error);
-    res.status(500).json(false); // Return false in case of an error
+    res.status(500).json(false);
   }
 });
 
@@ -375,8 +340,6 @@ app.post("/follow/:username/:accUsername", async (req, res) => {
   try {
     const accUsername = req.params.accUsername;
     const username = req.params.username;
-
-    // Find the user and the user they want to follow
     const user = await User.findOne({ username });
     const accUser = await User.findOne({ username: accUsername });
 
@@ -384,13 +347,10 @@ app.post("/follow/:username/:accUsername", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if the user is not already following the other user
     if (!user.following.includes(accUser._id)) {
-      // If not, follow the user
       user.following.push(accUser._id);
       accUser.followers.push(user._id);
 
-      // Use findOneAndUpdate with the document's current version
       await User.findOneAndUpdate(
         { _id: user._id, __v: user.__v },
         { following: user.following },
@@ -415,8 +375,6 @@ app.post("/unfollow/:username/:accUsername", async (req, res) => {
   try {
     const accUsername = req.params.accUsername;
     const username = req.params.username;
-
-    // Find the user and the user they want to unfollow
     const user = await User.findOne({ username });
     const accUser = await User.findOne({ username: accUsername });
 
@@ -424,9 +382,7 @@ app.post("/unfollow/:username/:accUsername", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if the user is following the other user
     if (user.following.includes(accUser._id)) {
-      // If yes, unfollow the user
       user.following = user.following.filter(
         (id) => id.toString() !== accUser._id.toString()
       );
@@ -434,7 +390,6 @@ app.post("/unfollow/:username/:accUsername", async (req, res) => {
         (id) => id.toString() !== user._id.toString()
       );
 
-      // Use findOneAndUpdate with the document's current version
       await User.findOneAndUpdate(
         { _id: user._id, __v: user.__v },
         { following: user.following },
@@ -454,7 +409,7 @@ app.post("/unfollow/:username/:accUsername", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-//Like
+
 app.post("/likePost/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
@@ -477,10 +432,6 @@ app.post("/likePost/:postId", async (req, res) => {
 
 app.use("/uploads", express.static("./uploads"));
 
-/**
- * Should return a JSON array containing every listing (item)for the user
- */
-
 app.get("/get/posts/:username", function (req, res) {
   User.findOne({ username: req.params.username })
     .select("posts")
@@ -498,7 +449,6 @@ app.get("/get/posts/:username", function (req, res) {
     });
 });
 
-// DELETE
 app.delete("/delete/post/:postId", async (req, res) => {
   const postId = req.params.postId;
 
@@ -521,8 +471,6 @@ app.delete("/delete/post/:postId", async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 });
-
-//EDIT EDIT EDIT
 
 app.post("/update/post/:postId", async (req, res) => {
   const postId = req.params.postId;
@@ -549,16 +497,13 @@ app.post("/update/post/:postId", async (req, res) => {
 
 app.post("/upload/comment", async (req, res) => {
   const { post, text, user } = req.body;
-  console.log("CHECKPOINT WHISKEY");
   try {
-    // Create and save the new comment
     let newComment = new Comment({
       user: user,
       text: text,
       post: post,
     });
     await newComment.save();
-    console.log("CHECKPOINT AFTER newComment");
     let postToUpdate = await Post.findOne({ _id: post });
     if (!postToUpdate) {
       console.log("Post not found for ID:", post);
@@ -566,7 +511,6 @@ app.post("/upload/comment", async (req, res) => {
     }
     postToUpdate.comments.push(newComment._id);
     await postToUpdate.save();
-    console.log("CHECKPOINT NOVEMBER");
     res.status(201).json({ success: true, message: "Comment created", comment: newComment });
   } catch (error) {
     console.error("Error in /upload/comment:", error);
@@ -576,12 +520,12 @@ app.post("/upload/comment", async (req, res) => {
 
 app.get('/get/comments/:postId', async (req, res) => {
   try {
-      const postId = req.params.postId;
-      const comments = await Comment.find({ post: postId });
+    const postId = req.params.postId;
+    const comments = await Comment.find({ post: postId });
 
-      res.json(comments);
+    res.json(comments);
   } catch (error) {
-      console.error("Error fetching comments:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });

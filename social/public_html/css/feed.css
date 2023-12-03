@@ -8,20 +8,18 @@ body {
   font-family: "Arial", sans-serif;
   background: linear-gradient(to bottom, #F58529, #DD2A7B);
   background-size: cover;
-  background-attachment: fixed; /* This will fix your background in place */
+  background-attachment: fixed;
   height: 97.4vh;
-  overflow-x: hidden; /* Prevents horizontal scroll if any */
+  overflow-x: hidden;
 }
-
 
 #topContainer {
   margin-top: 1%;
   border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Adjusted to space-between for better distribution */
+  justify-content: space-between;
   gap: 10px;
-
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -96,8 +94,8 @@ body {
   background-color: #0d456c;
 }
 #topContainer, #displayArea {
-  width: 80%; /* Set the same width for both */
-  margin: 20px auto; /* Top and bottom margins at 20px, auto margins on left and right for centering */
+  width: 80%;
+  margin: 20px auto;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -109,7 +107,7 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   padding: 15px;
-  max-width: 600px; /* Adjust as needed */
+  max-width: 600px;
   margin: 20px auto;
 }
 
@@ -121,11 +119,10 @@ body {
 
 .post p, .post div {
   margin-top: 10px;
-  color: #333; /* Dark gray text */
+  color: #333;
   font-family: "Arial", sans-serif;
 }
 
-/* If you have like, comment buttons or other interactive elements */
 .post .interactive-buttons {
   display: flex;
   justify-content: space-between;
@@ -146,14 +143,8 @@ body {
 }
 
 .post {
-  /* Existing styles */
   display: flex;
   flex-direction: column;
-}
-
-.post-image {
-  /* Styles for the image container if needed */
-
 }
 
 .post-content {
@@ -165,38 +156,33 @@ body {
 hr {
   border: 0;
   height: 1px;
-  background-color: #ddd; /* Or any color that fits your design */
+  background-color: #ddd;
   margin: 10px 0;
 }
 
 #likeButton {
-  /* Existing styles */
-  margin-left: auto; /* Pushes the button to the right */
+  margin-left: auto;
 }
 
 .list {
   text-align: center;
 }
 
-/* Style the listUsers container */
 .listUsers {
   text-align: center;
-  font-family: "Arial", sans-serif; /* Set a nicer font */
+  font-family: "Arial", sans-serif; 
   font-size: 20px;
   padding: 20px;
 }
 
-/* Style the anchor tags representing each user */
 .listUsers a {
-  display: block; /* Show each user on a new line */
-  text-decoration: none; /* Remove underline from links */
-  color: #333; /* Set text color */
+  display: block;
+  text-decoration: none; 
+  color: #333;
 }
 
-/* Style the anchor tags on hover */
 .listUsers a:hover {
-  color: blue; /* Change color on hover */
-  /* Add more hover styles as needed */
+  color: #f7319e;
 }
 
 .username {
@@ -205,7 +191,7 @@ hr {
 }
 
 .username:hover {
-  color: #f7319e; /* Change to your desired hover color */
+  color: #f7319e;
 }
 
 .comment-section{
