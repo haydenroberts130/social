@@ -265,9 +265,7 @@ function likePost(postId) {
     })
     .catch((error) => console.error("Error:", error));
 }
-/////////////////////////////////
-// likeComment
-/////////////////////////////////
+
 function likeComment(commentId) {
   fetch(`/likeComment/${commentId}?timestamp=${new Date().getTime()}`, { method: "POST" })
     .then((response) => response.json())
@@ -279,7 +277,6 @@ function likeComment(commentId) {
     })
     .catch((error) => console.error("Error:", error));
 }
-
 
 async function getCurrentUsername() {
   const response = await fetch("/get/usernameFromCookie");
@@ -476,7 +473,7 @@ async function commentCreate(postId) {
       );
       const commentElement = document.createElement("div");
       commentElement.classList.add("comment");
-      commentElement.setAttribute("data-comment-id", result.comment._id); // Correctly set the data-comment-id
+      commentElement.setAttribute("data-comment-id", result.comment._id);
 
       let deleteCommentHTML = '';
 
@@ -500,8 +497,6 @@ async function commentCreate(postId) {
     });
 }
 
-
-// DELETE COMMENTE DELETE COMMENTE DELETE COMMENTE
 function deleteComment(postId, commentId) {
   const confirmDelete = window.confirm(
     "Are you sure you want to delete this comment?"
@@ -512,10 +507,7 @@ function deleteComment(postId, commentId) {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          // First, find the post element
           const postElement = document.getElementById(`post_${postId}`);
-
-          // Then find the comment within this post
           const commentElement = postElement.querySelector(`.comment[data-comment-id='${commentId}']`);
           
           if (commentElement) {

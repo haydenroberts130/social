@@ -188,41 +188,65 @@
       }
     }
 
-    function appendComments(postId, comments) {
+    async function appendComments(postId, comments) {
       const postCommentsDiv = document.getElementById(
         `postComments_${postId}`
       );
 
       postCommentsDiv.innerHTML = "";
 
-      comments.forEach((comment) => {
-        const commentDiv = document.createElement("div");
-        commentDiv.classList.add("comment");
+      try {
+        const username = await getUsername();
 
-        const commentUserSpan = document.createElement("span");
-        commentUserSpan.innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a>`;
-
-        const commentTextSpan = document.createElement("span");
-        commentTextSpan.textContent = ` : ${comment.text}`;
-
-        const commentLikeButton = document.createElement("button");
-        commentLikeButton.id = `comment_like_count_${comment._id}`;
-        commentLikeButton.classList.add("styled-button", "comment-like-button");
-        if (comment.likes == null) {
-          commentLikeButton.textContent = "❤ 0";
-        } else {
-          commentLikeButton.textContent = "❤ " + comment.likes;
+        if (!username) {
+          console.error("Failed to get username");
+          return;
         }
-        commentLikeButton.addEventListener("click", function () {
-          likeComment(comment._id);
+
+        comments.forEach((comment) => {
+          const commentDiv = document.createElement("div");
+          commentDiv.classList.add("comment");
+
+          commentDiv.setAttribute("data-comment-id", comment._id);
+
+          const commentUserSpan = document.createElement("span");
+          commentUserSpan.innerHTML = `<span style="color: gray;">@</span><a href="account.html?username=${comment.user}" class="username" style="text-decoration: underline;">${comment.user}</a>`;
+
+          const commentTextSpan = document.createElement("span");
+          commentTextSpan.textContent = ` : ${comment.text}`;
+
+          const commentLikeButton = document.createElement("button");
+          commentLikeButton.id = `comment_like_count_${comment._id}`;
+          commentLikeButton.classList.add("styled-button", "comment-like-button");
+          if (comment.likes == null) {
+            commentLikeButton.textContent = "❤ 0";
+          } else {
+            commentLikeButton.textContent = "❤ " + comment.likes;
+          }
+          commentLikeButton.addEventListener("click", function () {
+            likeComment(comment._id);
+          });
+
+          commentDiv.appendChild(commentUserSpan);
+          commentDiv.appendChild(commentTextSpan);
+          commentDiv.appendChild(commentLikeButton);
+
+          if (comment.user == username) {
+            const commentDeleteButton = document.createElement("button");
+            commentDeleteButton.textContent = "Delete";
+            commentDeleteButton.classList.add("styled-button", "comment-delete-button");
+            commentDeleteButton.addEventListener("click", function () {
+              deleteComment(comment.post, comment._id);
+            });
+            commentDiv.appendChild(commentDeleteButton);
+          }
+
+          postCommentsDiv.appendChild(commentDiv);
         });
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
 
-        commentDiv.appendChild(commentUserSpan);
-        commentDiv.appendChild(commentTextSpan);
-        commentDiv.appendChild(commentLikeButton);
-
-        postCommentsDiv.appendChild(commentDiv);
-      });
     }
   </script>
 </body>

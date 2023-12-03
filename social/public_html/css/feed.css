@@ -29,9 +29,9 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-left: auto;
   margin-right: auto;
-  width: 80%; /* This should be the same as #displayArea */
-  left: 0; /* Reset this property */
-  right: 0; /* Reset this property */
+  width: 80%; 
+  left: 0; 
+  right: 0;
 }
 
 .empty-feed-message {
@@ -77,9 +77,9 @@ body {
   min-height: 75%;
   margin-left: auto;
   margin-right: auto;
-  width: 80%; /* This should be the same as #header */
-  left: 0; /* Reset this property */
-  right: 0; /* Reset this property */
+  width: 80%; 
+  left: 0; 
+  right: 0;
 }
 
 #displayPosts, #displayComments {
@@ -220,6 +220,10 @@ hr {
   align-items: center;
 }
 
-.comment-like-button .comment-delete-button{
+.comment .comment-like-button{
   margin-left: auto;
+}
+
+.comment .comment-delete-button{
+  margin-left: 10px;
 }
