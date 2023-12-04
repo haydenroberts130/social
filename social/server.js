@@ -113,14 +113,14 @@ function removeSessions() {
   let usernames = Object.keys(sessions);
   for (let i = 0; i < usernames.length; i++) {
     let last = sessions[usernames[i]].time;
-    if (last + 600000 < now) {
+    if (last + 6000000 < now) {
       delete sessions[usernames[i]];
     }
   }
   console.log(sessions);
 }
 
-setInterval(removeSessions, 600000);
+setInterval(removeSessions, 10);
 
 app.post("/account/login", async (req, res) => {
   let u = req.body;
