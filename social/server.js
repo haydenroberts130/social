@@ -81,6 +81,11 @@ app.get("/account.html/", (req, res, next) => {
   next();
 });
 
+app.use("/help.html/", authenticate);
+app.get("/help.html/", (req, res, next) => {
+  next();
+});
+
 app.use(express.static(__dirname + "/public_html"));
 
 let sessions = {};
@@ -120,7 +125,7 @@ function removeSessions() {
   console.log(sessions);
 }
 
-setInterval(removeSessions, 10);
+setInterval(removeSessions, 2000);
 
 app.post("/account/login", async (req, res) => {
   let u = req.body;

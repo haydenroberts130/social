@@ -6,6 +6,7 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>Help Center</title>
     <link rel="stylesheet" href="./css/help.css" />
     <script src="client.js" defer></script>
@@ -15,7 +16,7 @@
     <div id="topContainer">
         <div id="userBar">
             <span id="accTop">
-                <h1 id="displayName"></h1>
+                <span id="displayName" style="font-size: 2em; font-weight: bold; margin-right: 10px; display: block;"></span> 
             </span>
             <script>
                 const getUsername = () => {
@@ -48,20 +49,24 @@
         </div>
     </div>
     <div id="displayArea">
-        <h1 id="titleText">Social Features</h1>
+        <h1 class="titleText">Social Features</h1>
         <div class="post">
-            <h2 id="titleText">Your Profile</h2>
+            <h2 class="titleText">Your Profile</h2>
             <p class="helpText">
                 Your profile page is where all of your photos are located at. You can
-                see each of your posts, the likes, and comments all in one place. Click 
-                your @ in the top left corner to be taken to your account. There you 
-                can view your posts and edit their captions if you please by clicking on 
-                the “Edit” button. After editing your caption, click “Save” to save the new caption.
+                see each of your posts, the likes, and comments all in one place.
+
+            </p>
+
+            <p class="helpText">
+                In addition, you can manage all the aspects of your posts, such as
+                editing the post caption, deleting the post, and even deleting 
+                unwanted comments from other users.
             </p>
         </div>
 
         <div class="post">
-            <h2 id="titleText">Sharing Photos</h2>
+            <h2 class="titleText">Sharing Photos</h2>
             <p class="helpText">
                 To share your photos and have them show on your profile, click the '+'
                 button located on the right of the top bar. There, you will be
@@ -72,7 +77,7 @@
         </div>
 
         <div class="post">
-            <h2 id="titleText">Viewing Photos</h2>
+            <h2 class="titleText">Viewing Photos</h2>
             <p class="helpText">
                 By default, you will be able to view photos of people you are
                 following in your feed. To view a specific person's post, search them
@@ -86,9 +91,9 @@
                 on any post that contains them.</p>
         </div>
 
-        <h1 id="titleText">Account Management</h1>
+        <h1 class="titleText">Account Management</h1>
         <div class="post">
-            <h2 id="titleText">Signing up and Getting Started</h2>
+            <h2 class="titleText">Signing up and Getting Started</h2>
             <p class="helpText">
                 To sign up, navigate to the home page, where upon entering the desired
                 username and password, a new account can be created. It is advised to
